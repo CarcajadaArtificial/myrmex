@@ -1,6 +1,6 @@
 ### Notes
 #### On properties
-- I think of three types of properties: genetic, intrinsic and consecuential.
+- I think of three types of properties: genetic, intrinsic, and consequential.
 
 ### To be designed
 #### Things
