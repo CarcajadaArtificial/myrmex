@@ -10,26 +10,28 @@
 * The abstract brain design must have a mechanism that allows it to grow when needed. This way I could create a process for gradually training a brain to do new things without compromising previous knowledge.
 * Let's say an ant evolves its brain until it learns to receive food from a robotic ant that is always giving food artificially upon receiving a particular sign. Afterward, I would wish for the ant's brain to feed another ant that is asking for food.
 
+#### On Randomness
+- 
+
 ### To be designed
 #### Things
-- [ ] Air
+- [x] Air
 	- [x] Light level
-	- [ ] Temperature
-- [ ] Soil
-	- [ ] Humidity
+	- [x] Temperature
+- [x] Soil
+	- [x] Humidity
 	- [x] Fertility
-- [ ] Rocks
+- [x] Rocks
 - [ ] Water
-	- [ ] Water level
+	- [x] Water level
 	- [ ] Gravity
-	- [ ] Temperature
 
 #### Concepts
 - [ ] Time
-	- [ ] Tick speed
+	- [x] Tick speed
 	- [ ] Order of events
-	- [ ] Ticks per day
-	- [ ] Calendar
+	- [x] Ticks per day
+	- [x] Calendar
 - [ ] Weather
 	- [ ] Temperature
 	- [ ] Precipitation
@@ -53,9 +55,9 @@
 
 ### The order of business
 #### v0.1 - Let there be light
-- Light
-- Air
-- Time
+- [x] Light
+- [x] Air
+- [ ] Time
 #### v0.2 - Let there be a vault between the waters
 - Water
 - Sky

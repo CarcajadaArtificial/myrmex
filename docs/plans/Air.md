@@ -12,3 +12,7 @@ The way I imagine it is as follows: The world's ceiling will be the `sky`. Any a
 ### Temperature
 #Temperature
 
+This is a 4-bit number that represents all temperatures. Having the lowest value would represent -10°C and the highest 45°C.
+
+The design of the temperature mechanic es meant to emulate convection. In the real world, particles transfer heat upwards and create motion in loops. I'm going to take inspiration from the upwards bias in nature but ignore the created motion. If a block of air is hotter than the one on top of it, it can transfer up to 3 units of temperature upwards. If it is hotter than a block on the side, it can transfer up to 2 units. And if it can't transfer temperature to the top or the sides, it can transfer it to the block below up to 1 unit at a time. 
+
