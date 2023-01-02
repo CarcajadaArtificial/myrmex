@@ -1,11 +1,12 @@
 # Changelog
 
-## v0.0.6
+## v0.0.7
 
 ### Added
 
-**Updated documentation plans.**
-- [`~/docs/plans/Air.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/plans/Air.md)
-- [`~/docs/plans/Home.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/plans/Home.md)
-- [`~/docs/plans/Sky.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/plans/Sky.md)
-- [`~/docs/plans/Time.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/plans/Time.md)
+**Updated gitignore for the compiled binary.**
+- [`~/.gitignore`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/.gitignore)
+
+**Added rust main files.**
+- [`~/src/main.rs`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/src/main.rs)
+- [`~/Cargo.toml`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/Cargo.toml)
