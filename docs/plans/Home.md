@@ -11,7 +11,7 @@
 * Let's say an ant evolves its brain until it learns to receive food from a robotic ant that is always giving food artificially upon receiving a particular sign. Afterward, I would wish for the ant's brain to feed another ant that is asking for food.
 
 #### On Randomness
-- 
+- When something cannot be arbitrarily defined, dice could be thrown to create less-biased results. This has to be a careful decision because it would rise the program's complexity.
 
 ### To be designed
 #### Things
@@ -27,9 +27,9 @@
 	- [ ] Gravity
 
 #### Concepts
-- [ ] Time
+- [x] Time
 	- [x] Tick speed
-	- [ ] Order of events
+	- [x] Order of events
 	- [x] Ticks per day
 	- [x] Calendar
 - [ ] Weather
@@ -57,7 +57,7 @@
 #### v0.1 - Let there be light
 - [x] Light
 - [x] Air
-- [ ] Time
+- [x] Time
 #### v0.2 - Let there be a vault between the waters
 - Water
 - Sky
