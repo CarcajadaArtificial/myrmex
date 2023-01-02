@@ -12,6 +12,7 @@
 
 #### On Randomness
 - When something cannot be arbitrarily defined, dice could be thrown to create less-biased results. This has to be a careful decision because it would rise the program's complexity.
+- When creating a world, 
 
 ### To be designed
 #### Things
