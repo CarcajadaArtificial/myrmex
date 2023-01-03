@@ -20,6 +20,9 @@ impl MyEguiApp {
 
 impl eframe::App for MyEguiApp {
    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::TopBottomPanel::top("my_panel").show(ctx, |ui| {
+            ui.button("Hello World!").clicked();
+        });
        egui::CentralPanel::default().show(ctx, |ui| {
            ui.heading("Hello World!");
        });

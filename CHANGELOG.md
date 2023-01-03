@@ -1,11 +1,8 @@
 # Changelog
 
-## v0.0.9
+## v0.0.10
 
 ### Added
-
-**Updated documentation files.**
-- [`~/docs/plans/Home.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/plans/Home.md)
 
 **Updated the requirements document.**
 - [`~/docs/requirements/v0.1.0.md`](https://github.com/CarcajadaArtificial/Myrmex/blob/main/docs/requirements/v0.1.0.md)
