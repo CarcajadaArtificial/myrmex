@@ -19,12 +19,18 @@ impl MyEguiApp {
 }
 
 impl eframe::App for MyEguiApp {
-   fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::TopBottomPanel::top("my_panel").show(ctx, |ui| {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.button("Hello World!").clicked();
         });
-       egui::CentralPanel::default().show(ctx, |ui| {
-           ui.heading("Hello World!");
-       });
-   }
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Hello World!");
+        });
+        egui::TopBottomPanel::bottom("bottom_panel").min_height(12.0).show(ctx, |ui| {
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                ui.add(egui::Hyperlink::from_label_and_url("GitHub", "https://github.com/CarcajadaArtificial/Myrmex"));
+                ui.label("Made by Oscar Alfonso Guerrero");
+            });
+        });
+    }
 }
