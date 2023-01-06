@@ -1,8 +1,9 @@
 # Changelog
 
-## v0.0.17
+## v0.0.18
 
-### Rearranged gui app modules
+### Created a module for the window ui component.
 
-[`~/src/gui/mod.rs`](/src/gui/mod.rs)
-- Moved the gui module to its own directory.
+[`~/src/gui/mod.rs`](/src/gui/mod.rs), [`~/src/gui/window.rs`](/src/gui/window.rs)
+- Created the `render_window` component.
+- Added a window render for each tool in the widget menu.

@@ -5,11 +5,15 @@
 //
 //=====================================================================================================//
 use eframe::egui;
+mod window;
 #[derive(Default)]
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 ///
 struct MyrmexGui {
     widget_environment_is_open: bool,
+    widget_property_filter_is_open: bool,
+    widget_time_control_is_open: bool,
+    widget_usage_indicator_is_open: bool,
 }
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
@@ -35,11 +39,11 @@ impl eframe::App for MyrmexGui {
                     if ui.button("Environment").clicked() {
                         self.widget_environment_is_open = true
                     } else if ui.button("Property Filter").clicked() {
-                        // …
+                        self.widget_property_filter_is_open = true
                     } else if ui.button("Time Control").clicked() {
-                        // …
+                        self.widget_time_control_is_open = true
                     } else if ui.button("Usage Indicator").clicked() {
-                        // …
+                        self.widget_usage_indicator_is_open = true
                     }
                 });
                 ui.menu_button("Debug", |ui| {
@@ -64,18 +68,41 @@ impl eframe::App for MyrmexGui {
                 });
             });
 
-        egui::Window::new("Environment")
-            .frame(
-                egui::Frame::none()
-                    .shadow(eframe::epaint::Shadow::small_light())
-                    .fill(egui::Color32::BLACK)
-                    .inner_margin(egui::style::Margin::same(12.0))
-                    .rounding(eframe::epaint::Rounding::same(4.0)),
-            )
-            .open(&mut self.widget_environment_is_open)
-            .show(ctx, |ui| {
+        window::render_window(
+            ctx,
+            "Property Filter",
+            &mut self.widget_property_filter_is_open,
+            |ui| {
+                ui.label("This is the property filter widget.");
+            },
+        );
+
+        window::render_window(
+            ctx,
+            "Environment",
+            &mut self.widget_environment_is_open,
+            |ui| {
                 ui.label("This is the environment widget.");
-            });
+            },
+        );
+
+        window::render_window(
+            ctx,
+            "Time Control",
+            &mut self.widget_time_control_is_open,
+            |ui| {
+                ui.label("This is the time control widget.");
+            },
+        );
+
+        window::render_window(
+            ctx,
+            "Usage Indicator",
+            &mut self.widget_usage_indicator_is_open,
+            |ui| {
+                ui.label("This is the usage indicator widget.");
+            },
+        );
     }
 }
 
