@@ -1,6 +1,16 @@
+//  __      ___         _
+//  \ \    / (_)_ _  __| |_____ __ __
+//   \ \/\/ /| | ' \/ _` / _ \ V  V /
+//    \_/\_/ |_|_||_\__,_\___/\_/\_/
+//
+//=====================================================================================================//
 use eframe::egui;
 use egui::Ui;
 
+use super::colors;
+
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+///
 pub fn render_window(
     ctx: &egui::Context,
     name: &str,
@@ -11,7 +21,7 @@ pub fn render_window(
         .frame(
             egui::Frame::none()
                 .shadow(eframe::epaint::Shadow::small_light())
-                .fill(egui::Color32::BLACK)
+                .fill(colors::OBSIDIANA)
                 .inner_margin(egui::style::Margin::same(12.0))
                 .rounding(eframe::epaint::Rounding::same(4.0)),
         )
