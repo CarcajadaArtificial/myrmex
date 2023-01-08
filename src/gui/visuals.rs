@@ -6,11 +6,11 @@
 //=====================================================================================================//
 /// This module contains functions that configure eguis visuals.
 use super::colors;
-use egui::{FontData, FontDefinitions, FontFamily};
+use egui::{FontData, FontDefinitions, FontFamily, Visuals};
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
-/// This function edits eframe's CreationContext inserting FiraCode-Regular and setting it as the default main font and callback for monospace. Implementation taken from Docs.rs: https://docs.rs/egui/latest/egui/struct.FontDefinitions.html.
-pub fn insert_fonts(cc: &eframe::CreationContext<'_>) {
+/// This function edits eframe's CreationContext inserting FiraCode-Regular and the standard app Visuals and setting them as the default app style. Font implementation taken from Docs.rs: https://docs.rs/egui/latest/egui/struct.FontDefinitions.html.
+pub fn set_app_style(cc: &eframe::CreationContext<'_>) {
     let mut fonts = FontDefinitions::default();
     fonts.font_data.insert(
         "FiraCode".to_owned(),
@@ -29,11 +29,12 @@ pub fn insert_fonts(cc: &eframe::CreationContext<'_>) {
         .unwrap()
         .push("FiraCode".to_owned());
     cc.egui_ctx.set_fonts(fonts);
+    cc.egui_ctx.set_visuals(get_visuals());
 }
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
-/// This function sets up the visual theme for the application.
-pub fn set_visuals(cc: &eframe::CreationContext<'_>) {
+/// This function defines the visual theme for the application.
+fn get_visuals() -> Visuals {
     let visuals = &mut egui::style::Visuals::default();
     // Colors
     visuals.hyperlink_color = colors::MOTA;
@@ -49,5 +50,5 @@ pub fn set_visuals(cc: &eframe::CreationContext<'_>) {
     visuals.window_shadow = eframe::epaint::Shadow::small_light();
     // Strokes
     visuals.window_stroke = eframe::epaint::Stroke::NONE;
-    cc.egui_ctx.set_visuals(visuals.clone());
+    visuals.clone()
 }
