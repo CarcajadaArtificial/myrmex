@@ -7,3 +7,4 @@ rust-version = "1.66.0"
 [dependencies]
 egui = "0.20.1"
 eframe = "0.20.1"
+chrono = "0.4.23"

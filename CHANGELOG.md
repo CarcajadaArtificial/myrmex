@@ -1,12 +1,21 @@
 # Changelog
 
-## v0.0.19
+## v0.0.20
 
-### Added FiraCode-Regular as main font
+### Changed fonts module to visuals module
 
-[`~/static/fonts/FiraCode-Regular.ttf`](/static/fonts/FiraCode-Regular.ttf), [`~/src/gui/fonts.rs`](/src/gui/fonts.rs), [`~/src/gui/mod.rs`](/src/gui/mod.rs)
-- Created the `fonts::insert_fonts()` function and added it to the Gui implementation.
+[`~/src/gui/visuals.rs`](/src/gui/visuals.rs), [`~/src/gui/window.rs`](/src/gui/window.rs), [`~/src/gui/mod.rs`](/src/gui/mod.rs)
+- Removed `fonts.rs`.
+- Removed the frame override in `window.rs`.
+- Added `set_visuals` to `gui/mod.rs`.
 
-### Added color palette to the gui
+### Project notebook for misc notes.
 
-[`~/src/gui/colors.rs`](/src/gui/colors.rs), [`~/src/gui/window.rs`](/src/gui/window.rs)
+[`~/docs/notebook.md`](/docs/notebook.md)
+- Added notes for `visuals.rs`.
+
+### Added the crono crate
+
+[`~/Cargo.toml`](/Cargo.toml), [`~/src/gui/mod.rs`](/src/gui/mod.rs)
+- Added the dependency to `Cargo.toml`.
+- Added timedate implementation to `gui/mod.rs`.

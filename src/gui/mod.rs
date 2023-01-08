@@ -4,12 +4,14 @@
 //   \___|\___/|___|
 //
 //=====================================================================================================//
+// This module has the main methods of rendering the application's gui. Here egui can be configured, the global state is defined and the entire app is rendered.
+use chrono::prelude::*;
 use eframe::egui;
 mod colors;
-mod fonts;
+mod visuals;
 mod window;
 #[derive(Default)]
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 ///
 struct MyrmexGui {
     widget_environment_is_open: bool,
@@ -18,21 +20,21 @@ struct MyrmexGui {
     widget_usage_indicator_is_open: bool,
 }
 
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 ///
 impl MyrmexGui {
     ///
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
-        fonts::insert_fonts(cc);
+        visuals::insert_fonts(cc);
+        visuals::set_visuals(cc);
         Self::default()
     }
 }
 
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 ///
 impl eframe::App for MyrmexGui {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
@@ -67,11 +69,13 @@ impl eframe::App for MyrmexGui {
                         "GitHub",
                         "https://github.com/CarcajadaArtificial/Myrmex",
                     ));
-                    ui.label("Made by Oscar Alfonso Guerrero");
+                    ui.label("Made by: Oscar Alfonso Guerrero");
                 });
             });
 
-        window::render_window(
+        render_environment_window(ctx, &mut self.widget_environment_is_open);
+
+        window::render(
             ctx,
             "Property Filter",
             &mut self.widget_property_filter_is_open,
@@ -80,16 +84,7 @@ impl eframe::App for MyrmexGui {
             },
         );
 
-        window::render_window(
-            ctx,
-            "Environment",
-            &mut self.widget_environment_is_open,
-            |ui| {
-                ui.label("This is the environment widget.");
-            },
-        );
-
-        window::render_window(
+        window::render(
             ctx,
             "Time Control",
             &mut self.widget_time_control_is_open,
@@ -98,7 +93,7 @@ impl eframe::App for MyrmexGui {
             },
         );
 
-        window::render_window(
+        window::render(
             ctx,
             "Usage Indicator",
             &mut self.widget_usage_indicator_is_open,
@@ -109,7 +104,7 @@ impl eframe::App for MyrmexGui {
     }
 }
 
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 /// This function is called by `main.rs`. Renders the entirety of the app's gui.
 pub fn render_app() {
     let native_options = eframe::NativeOptions::default();
@@ -118,4 +113,25 @@ pub fn render_app() {
         native_options,
         Box::new(|cc| Box::new(MyrmexGui::new(cc))),
     );
+}
+
+//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+fn render_environment_window(ctx: &egui::Context, is_open: &mut bool) {
+    window::render(ctx, "Environment", is_open, |ui| {
+        ui.label(format!("{}", Utc::now().format("%a, %b %e - %I:%M:%S %P")));
+        ui.label("x days passed");
+        ui.separator();
+        egui::Grid::new("Weather indicators")
+            .num_columns(2)
+            .show(ui, |ui| {
+                ui.label("Light");
+                ui.add(egui::ProgressBar::new(0.46).show_percentage());
+                ui.end_row();
+                ui.label("Temperature");
+                ui.add(egui::ProgressBar::new(0.8).text("45 °C"));
+                ui.end_row();
+                ui.label("Humidity");
+                ui.add(egui::ProgressBar::new(0.06).text("Mostly sunny"));
+            });
+    });
 }
