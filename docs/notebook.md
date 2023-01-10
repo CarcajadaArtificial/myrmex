@@ -1,5 +1,5 @@
 ## `mod.rs`
-- Move the TopBottomPanels to their own module.
+- ~~Move the TopBottomPanels to their own module.~~
 - Move the Central panel to its own module.
 
 ## `visuals.rs`
