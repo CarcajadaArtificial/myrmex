@@ -10,17 +10,20 @@ mod colors;
 mod top_bottom_panel;
 mod visuals;
 mod window;
+mod world_properties;
+
 #[derive(Default)]
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
+
 ///
 struct MyrmexGui {
+    world_properties: world_properties::WorldProperties,
+    // world_properties: &mut world_properties::WorldProperties,
     widget_environment_is_open: bool,
     widget_property_filter_is_open: bool,
     widget_time_control_is_open: bool,
     widget_usage_indicator_is_open: bool,
 }
 
-//== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 ///
 impl MyrmexGui {
     ///
@@ -34,6 +37,8 @@ impl MyrmexGui {
 ///
 impl eframe::App for MyrmexGui {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.world_properties = world_properties::WorldProperties::default();
+
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("Widgets", |ui| {
@@ -59,10 +64,14 @@ impl eframe::App for MyrmexGui {
         });
         top_bottom_panel::bottom(ctx);
 
-        window::environment(ctx, &mut self.widget_environment_is_open);
-        window::property_filter(ctx, &mut self.widget_property_filter_is_open);
-        window::time_control(ctx, &mut self.widget_time_control_is_open);
-        window::usage_indicator(ctx, &mut self.widget_usage_indicator_is_open);
+        self.world_properties
+            .environment(ctx, &mut self.widget_environment_is_open);
+        self.world_properties
+            .property_filter(ctx, &mut self.widget_property_filter_is_open);
+        self.world_properties
+            .time_control(ctx, &mut self.widget_time_control_is_open);
+        self.world_properties
+            .usage_indicator(ctx, &mut self.widget_usage_indicator_is_open);
     }
 }
 
