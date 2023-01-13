@@ -17,11 +17,6 @@ mod world_properties;
 ///
 struct MyrmexGui {
     world_properties: world_properties::WorldProperties,
-    // world_properties: &mut world_properties::WorldProperties,
-    widget_environment_is_open: bool,
-    widget_property_filter_is_open: bool,
-    widget_time_control_is_open: bool,
-    widget_usage_indicator_is_open: bool,
 }
 
 ///
@@ -29,7 +24,9 @@ impl MyrmexGui {
     ///
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         visuals::set_app_style(cc);
-        Self::default()
+        Self {
+            world_properties: world_properties::WorldProperties::default(),
+        }
     }
 }
 
@@ -37,19 +34,21 @@ impl MyrmexGui {
 ///
 impl eframe::App for MyrmexGui {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        self.world_properties = world_properties::WorldProperties::default();
-
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("Widgets", |ui| {
                     if ui.button("Environment").clicked() {
-                        self.widget_environment_is_open = true
+                        self.world_properties.window_environment_is_open =
+                            !self.world_properties.window_environment_is_open
                     } else if ui.button("Property Filter").clicked() {
-                        self.widget_property_filter_is_open = true
+                        self.world_properties.window_property_filter_is_open =
+                            !self.world_properties.window_property_filter_is_open
                     } else if ui.button("Time Control").clicked() {
-                        self.widget_time_control_is_open = true
+                        self.world_properties.window_time_control_is_open =
+                            !self.world_properties.window_time_control_is_open
                     } else if ui.button("Usage Indicator").clicked() {
-                        self.widget_usage_indicator_is_open = true
+                        self.world_properties.window_usage_indicator_is_open =
+                            !self.world_properties.window_usage_indicator_is_open
                     }
                 });
                 ui.menu_button("Debug", |ui| {
@@ -64,14 +63,10 @@ impl eframe::App for MyrmexGui {
         });
         top_bottom_panel::bottom(ctx);
 
-        self.world_properties
-            .environment(ctx, &mut self.widget_environment_is_open);
-        self.world_properties
-            .property_filter(ctx, &mut self.widget_property_filter_is_open);
-        self.world_properties
-            .time_control(ctx, &mut self.widget_time_control_is_open);
-        self.world_properties
-            .usage_indicator(ctx, &mut self.widget_usage_indicator_is_open);
+        self.world_properties.environment(ctx);
+        self.world_properties.property_filter(ctx);
+        self.world_properties.time_control(ctx);
+        self.world_properties.usage_indicator(ctx);
     }
 }
 

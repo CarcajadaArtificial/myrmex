@@ -4,14 +4,13 @@
 //    \_/\_/ |_|_||_\__,_\___/\_/\_/
 //
 //=====================================================================================================//
-use chrono::prelude::Utc;
 use eframe::egui;
 use egui::Ui;
 
 use super::colors;
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
-///
+/// This image renders a window component using a standard Frame and open/close functionality.
 pub fn render(ctx: &egui::Context, name: &str, is_open: &mut bool, inside_render: fn(&mut Ui)) {
     egui::Window::new(name)
         .open(is_open)
@@ -23,6 +22,7 @@ pub fn render(ctx: &egui::Context, name: &str, is_open: &mut bool, inside_render
                 .inner_margin(egui::style::Margin::same(12.0))
                 .rounding(eframe::epaint::Rounding::same(4.0)),
         )
+        .title_bar(false)
         .collapsible(false)
         .resizable(false)
         .show(ctx, |ui| {

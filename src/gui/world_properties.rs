@@ -28,6 +28,10 @@ pub struct WorldProperties {
     usage_last_tick: f32,
     /// Filter for the air block's light level property.
     filter_air_light_level: bool,
+    pub window_environment_is_open: bool,
+    pub window_property_filter_is_open: bool,
+    pub window_time_control_is_open: bool,
+    pub window_usage_indicator_is_open: bool,
 }
 
 impl Default for WorldProperties {
@@ -38,52 +42,76 @@ impl Default for WorldProperties {
             tick_speed: 1.0,
             usage_last_tick: 0.0,
             filter_air_light_level: false,
+            window_environment_is_open: false,
+            window_property_filter_is_open: false,
+            window_time_control_is_open: false,
+            window_usage_indicator_is_open: false,
         }
     }
 }
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
-/// @todo - Implement window_is_open in this imp instead of the MyrmexGui imp.
+///
 impl WorldProperties {
     ///
-    pub fn environment(self, ctx: &egui::Context, is_open: &mut bool) {
-        window::render(ctx, "Environment", is_open, |ui| {
-            ui.label(format!("{}", Utc::now().format("%a, %b %e - %I:%M:%S %P")));
-            ui.label("x days passed");
-            ui.separator();
-            egui::Grid::new("Weather indicators")
-                .num_columns(2)
-                .show(ui, |ui| {
-                    ui.label("Light");
-                    ui.add(egui::ProgressBar::new(0.46).show_percentage());
-                    ui.end_row();
-                    ui.label("Temperature");
-                    ui.add(egui::ProgressBar::new(0.8).text("45 °C"));
-                    ui.end_row();
-                    ui.label("Humidity");
-                    ui.add(egui::ProgressBar::new(0.06).text("Mostly sunny"));
-                });
-        });
+    pub fn environment(mut self, ctx: &egui::Context) {
+        window::render(
+            ctx,
+            "Environment",
+            &mut self.window_environment_is_open,
+            |ui| {
+                ui.label(format!("{}", Utc::now().format("%a, %b %e - %I:%M:%S %P")));
+                ui.label("x days passed");
+                ui.separator();
+                egui::Grid::new("Weather indicators")
+                    .num_columns(2)
+                    .show(ui, |ui| {
+                        ui.label("Light");
+                        ui.add(egui::ProgressBar::new(0.46).show_percentage());
+                        ui.end_row();
+                        ui.label("Temperature");
+                        ui.add(egui::ProgressBar::new(0.8).text("45 °C"));
+                        ui.end_row();
+                        ui.label("Humidity");
+                        ui.add(egui::ProgressBar::new(0.06).text("Mostly sunny"));
+                    });
+            },
+        );
     }
 
     ///
-    pub fn property_filter(self, ctx: &egui::Context, is_open: &mut bool) {
-        window::render(ctx, "Property Filter", is_open, |ui| {
-            ui.label("This is the property filter widget.");
-        });
+    pub fn property_filter(mut self, ctx: &egui::Context) {
+        window::render(
+            ctx,
+            "Property Filter",
+            &mut self.window_property_filter_is_open,
+            |ui| {
+                ui.label("This is the property filter widget.");
+            },
+        );
     }
 
     ///
-    pub fn time_control(self, ctx: &egui::Context, is_open: &mut bool) {
-        window::render(ctx, "Time Control", is_open, |ui| {
-            ui.label("This is the time control widget.");
-        });
+    pub fn time_control(mut self, ctx: &egui::Context) {
+        window::render(
+            ctx,
+            "Time Control",
+            &mut self.window_time_control_is_open,
+            |ui| {
+                ui.label("This is the time control widget.");
+            },
+        );
     }
 
     ///
-    pub fn usage_indicator(self, ctx: &egui::Context, is_open: &mut bool) {
-        window::render(ctx, "Usage Indicator", is_open, |ui| {
-            ui.label("This is the usage indicator widget.");
-        });
+    pub fn usage_indicator(mut self, ctx: &egui::Context) {
+        window::render(
+            ctx,
+            "Usage Indicator",
+            &mut self.window_usage_indicator_is_open,
+            |ui| {
+                ui.label("This is the usage indicator widget.");
+            },
+        );
     }
 }
