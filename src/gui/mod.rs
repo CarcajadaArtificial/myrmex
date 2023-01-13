@@ -7,6 +7,7 @@
 // This module has the main methods of rendering the application's gui. Here egui can be configured, the global state is defined and the entire app is rendered.
 use eframe::egui;
 mod colors;
+mod top_bottom_panel;
 mod visuals;
 mod window;
 #[derive(Default)]
@@ -56,17 +57,7 @@ impl eframe::App for MyrmexGui {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Hello World!");
         });
-        egui::TopBottomPanel::bottom("bottom_panel")
-            .min_height(12.0)
-            .show(ctx, |ui| {
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
-                    ui.add(egui::Hyperlink::from_label_and_url(
-                        "GitHub",
-                        "https://github.com/CarcajadaArtificial/Myrmex",
-                    ));
-                    ui.label("Made by: Oscar Alfonso Guerrero");
-                });
-            });
+        top_bottom_panel::bottom(ctx);
 
         window::environment(ctx, &mut self.widget_environment_is_open);
         window::property_filter(ctx, &mut self.widget_property_filter_is_open);
