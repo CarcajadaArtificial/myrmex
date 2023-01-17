@@ -4,10 +4,9 @@
 //    \_/\_/ |_|_||_\__,_\___/\_/\_/
 //
 //=====================================================================================================//
+use super::colors;
 use eframe::egui;
 use egui::Ui;
-
-use super::colors;
 
 //== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==//
 /// This image renders a window component using a standard Frame and open/close functionality.

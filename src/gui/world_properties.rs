@@ -4,6 +4,7 @@
 //    \_/\_/\___/_| |_\__,_| |_| |_| \___/ .__/\___|_|  \__|_\___/__/
 //                                       |_|
 //=====================================================================================================//
+use super::colors;
 use super::window;
 use chrono::prelude::Utc;
 
@@ -66,6 +67,7 @@ impl WorldProperties {
                 egui::Grid::new("Weather indicators")
                     .num_columns(2)
                     .show(ui, |ui| {
+                        ui.visuals_mut().selection.bg_fill = colors::LAVANDA;
                         ui.label("Light");
                         ui.add(egui::ProgressBar::new(0.46).show_percentage());
                         ui.end_row();

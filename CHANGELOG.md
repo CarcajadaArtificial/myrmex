@@ -1,10 +1,11 @@
 # Changelog
 
-## v0.0.25
+## v0.0.26
 
-### Moved the opening window functionality to `world_properties`.
+### Added world editor panel
 
-[`~/src/gui/world_properties.rs`](/src/gui/world_properties.rs), [`~/src/gui/window.rs`](/src/gui/window.rs), [`~/src/gui/mod.rs`](/src/gui/mod.rs)
-- Added public gate properties for each window.
-- Removed the previous gate properties from the global state struct.
-- Removed title bar from the `window` component.
+[`~/src/gui/mod.rs`](/src/gui/mod.rs)
+- Added the `side_length`, `height_length`, and `selected` properties.
+
+[`~/src/gui/world_properties.rs`](/src/gui/world_properties.rs)
+- Added a background fill to the progress bars.

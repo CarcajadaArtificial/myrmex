@@ -6,17 +6,19 @@
 //=====================================================================================================//
 // This module has the main methods of rendering the application's gui. Here egui can be configured, the global state is defined and the entire app is rendered.
 use eframe::egui;
+
 mod colors;
 mod top_bottom_panel;
 mod visuals;
 mod window;
 mod world_properties;
 
-#[derive(Default)]
-
 ///
 struct MyrmexGui {
     world_properties: world_properties::WorldProperties,
+    side_length: f32,
+    height_length: f32,
+    selected: String,
 }
 
 ///
@@ -26,6 +28,9 @@ impl MyrmexGui {
         visuals::set_app_style(cc);
         Self {
             world_properties: world_properties::WorldProperties::default(),
+            side_length: 0.0,
+            height_length: 0.0,
+            selected: "First".to_string(),
         }
     }
 }
@@ -59,7 +64,50 @@ impl eframe::App for MyrmexGui {
             });
         });
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Hello World!");
+            ui.heading("World Editor");
+            ui.horizontal(|ui| {
+                egui::ComboBox::from_label("Select existing world file")
+                    .selected_text(format!("{:?}", self.selected))
+                    .show_ui(ui, |ui| {
+                        ui.selectable_value(&mut self.selected, "First".to_string(), "First");
+                        ui.selectable_value(&mut self.selected, "Second".to_string(), "Second");
+                        ui.selectable_value(&mut self.selected, "Third".to_string(), "Third");
+                    });
+                if ui.button("Load world").clicked() {}
+            });
+            ui.separator();
+            ui.heading("Dimensions");
+            ui.horizontal(|ui| {
+                ui.label("Side (8-128 blocks):");
+                ui.add(
+                    egui::DragValue::new(&mut self.side_length)
+                        .speed(0.1)
+                        .fixed_decimals(0)
+                        .clamp_range(std::ops::RangeInclusive::new(8, 128)),
+                );
+            });
+            ui.horizontal(|ui| {
+                ui.label("Height (16-128 blocks):");
+                ui.add(
+                    egui::DragValue::new(&mut self.height_length)
+                        .speed(0.1)
+                        .fixed_decimals(0)
+                        .clamp_range(std::ops::RangeInclusive::new(16, 128)),
+                );
+            });
+            ui.separator();
+            ui.heading("Weather");
+            ui.horizontal(|ui| {
+                egui::ComboBox::from_label("Select weather file")
+                    .selected_text(format!("{:?}", self.selected))
+                    .show_ui(ui, |ui| {
+                        ui.selectable_value(&mut self.selected, "First".to_string(), "First");
+                        ui.selectable_value(&mut self.selected, "Second".to_string(), "Second");
+                        ui.selectable_value(&mut self.selected, "Third".to_string(), "Third");
+                    });
+            });
+            ui.separator();
+            if ui.button("Load World").clicked() {}
         });
         top_bottom_panel::bottom(ctx);
 
