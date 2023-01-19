@@ -1,11 +1,9 @@
 # Changelog
 
-## v0.0.26
+## v0.0.27
 
-### Added world editor panel
+### Updated requirements
 
-[`~/src/gui/mod.rs`](/src/gui/mod.rs)
-- Added the `side_length`, `height_length`, and `selected` properties.
+[`~/docs/requirements/v0.1.0.md`](/docs/requirements/v0.1.0.md)
+- Added file save requirements.
 
-[`~/src/gui/world_properties.rs`](/src/gui/world_properties.rs)
-- Added a background fill to the progress bars.
