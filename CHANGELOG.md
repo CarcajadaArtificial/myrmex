@@ -1,9 +1,9 @@
 # Changelog
 
-## v0.0.27
+## v0.0.28
 
-### Updated requirements
+### Implemented the Create World Screen
 
-[`~/docs/requirements/v0.1.0.md`](/docs/requirements/v0.1.0.md)
-- Added file save requirements.
-
+[`~/src/gui.mod`](/src/gui.mod)
+- Added the `weather_save_exists` and `world_save_exists` properties to the state.
+- Conditioned what is to be desplayed according to these new properties.
