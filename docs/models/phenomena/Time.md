@@ -1,8 +1,5 @@
 ## Concepts
 
-### Graphic Speed Limit
-- I'll be using the EGUI library that runs at 60fps and easily compiles to WASM.
-
 ### Tick Speed
 * A tick refers to the main unit of time relative to the simulated universe. Inside there, time will pass in ticks, instead of seconds.
 * A tick in this universe is not convertible to a "real-world" time unit (e.g. seconds). This is because it can have different "real-life" durations depending on the number of things to simulate. 
