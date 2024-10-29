@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.0.30
+## v0.0.31
 
-- Added first empty rendering of a tilemap using `bevy_fast_tilemap`.
-- Added the asset `tiles.png`.
+- Removed empty rendering of a tilemap using `bevy_fast_tilemap`.
+- Added empty rendering of a tilemap using `bevy_ecs_tilemap`.
