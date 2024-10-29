@@ -1,7 +1,6 @@
 # Changelog
 
-## v0.0.29
+## v0.0.30
 
-- Removed test egui implementation.
-- Added v0.1 scope definition document.
-- Added updated documentation.
+- Added first empty rendering of a tilemap using `bevy_fast_tilemap`.
+- Added the asset `tiles.png`.

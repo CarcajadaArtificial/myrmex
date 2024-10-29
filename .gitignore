@@ -7,3 +7,7 @@ Cargo.lock
 
 # Obsidian
 .obsidian
+
+# Added by cargo
+/target
+Cargo.lock

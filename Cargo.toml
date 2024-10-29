@@ -1,0 +1,14 @@
+[package]
+name = "myrmex"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.14.*"
+bevy_fast_tilemap = "0.8.1"
+rand = "0.8.*"
+num = "0.4.*"
+
+[dev-dependencies]
+bevy = "0.14"
+bevy-inspector-egui = { version = "0.25.2" }
