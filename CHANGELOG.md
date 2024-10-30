@@ -1,6 +1,5 @@
 # Changelog
 
-## v0.0.35
+## v0.0.37
 
-- Added `bevy-egui` and `bevy-inspector-egui` with a boilerplate implementation.
-- Added updated documentation.
+- Refactored the gui so that the side panels are their own functions.
