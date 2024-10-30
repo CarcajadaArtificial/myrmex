@@ -1,5 +1,5 @@
 # Changelog
 
-## v0.0.32
+## v0.0.33
 
-- Refactored the helpers module of `bevy_ecs_tilemap`.
+- Refactored the tilemap functionality to it's own function `setup_tilemap()`.

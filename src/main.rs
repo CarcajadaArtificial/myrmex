@@ -4,47 +4,29 @@ use bevy_ecs_tilemap::prelude::*;
 
 mod camera;
 
-/// The startup system initializes the camera and sets up the tilemap.
-fn startup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    // Conditional resource for array texture loading, used when the 'atlas' feature is off and 'render' is on.
-    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: Res<
+fn setup_tilemap(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: &Res<
         ArrayTextureLoader,
     >,
 ) {
-    commands.spawn(Camera2dBundle::default());
-
     let texture_handle: Handle<Image> = asset_server.load("tiles.png");
 
-    let map_size = TilemapSize { x: 32, y: 32 };
-    let tilemap_entity = commands.spawn_empty().id();
-    let mut tile_storage = TileStorage::empty(map_size);
-
-    fill_tilemap(
-        TileTextureIndex(0),
-        map_size,
-        TilemapId(tilemap_entity),
-        &mut commands,
-        &mut tile_storage,
-    );
-
-    let tile_size = TilemapTileSize { x: 16.0, y: 16.0 };
-    let grid_size = tile_size.into();
-    let map_type = TilemapType::default();
+    let (tilemap_entity, tile_storage, map_size, tile_size, grid_size, map_type) =
+        create_tilemap(commands);
 
     commands.entity(tilemap_entity).insert(TilemapBundle {
-        grid_size,
+        grid_size: grid_size.into(),
         map_type,
         size: map_size,
         storage: tile_storage,
         texture: TilemapTexture::Single(texture_handle.clone()),
         tile_size,
-        transform: get_tilemap_center_transform(&map_size, &grid_size, &map_type, 0.0),
+        transform: get_tilemap_center_transform(&map_size, &grid_size.into(), &map_type, 0.0),
         ..Default::default()
     });
 
-    // Add the texture to the array texture loader if applicable.
     #[cfg(all(not(feature = "atlas"), feature = "render"))]
     {
         array_texture_loader.add(TilemapArrayTexture {
@@ -53,6 +35,44 @@ fn startup(
             ..Default::default()
         });
     }
+}
+
+/// Creates the tilemap entity, initializes tile storage, and fills the tilemap with tiles.
+fn create_tilemap(
+    commands: &mut Commands,
+) -> (
+    Entity,
+    TileStorage,
+    TilemapSize,
+    TilemapTileSize,
+    Vec2,
+    TilemapType,
+) {
+    let map_size = TilemapSize { x: 32, y: 32 };
+    let tilemap_entity = commands.spawn_empty().id();
+    let mut tile_storage = TileStorage::empty(map_size);
+
+    // Fill the tilemap with tiles
+    fill_tilemap(
+        TileTextureIndex(0),
+        map_size,
+        TilemapId(tilemap_entity),
+        commands,
+        &mut tile_storage,
+    );
+
+    let tile_size = TilemapTileSize { x: 16.0, y: 16.0 };
+    let grid_size: TilemapGridSize = tile_size.into();
+    let map_type = TilemapType::default();
+
+    (
+        tilemap_entity,
+        tile_storage,
+        map_size,
+        tile_size,
+        grid_size.into(),
+        map_type,
+    )
 }
 
 /// Helper function to fill the tilemap with tiles.
@@ -79,9 +99,25 @@ fn fill_tilemap(
     }
 }
 
+fn startup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: Res<
+        ArrayTextureLoader,
+    >,
+) {
+    commands.spawn(Camera2dBundle::default());
+
+    setup_tilemap(
+        &mut commands,
+        &asset_server,
+        #[cfg(all(not(feature = "atlas"), feature = "render"))]
+        &array_texture_loader,
+    );
+}
+
 fn main() {
     App::new()
-        // Add default plugins with customized window settings.
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
@@ -91,7 +127,6 @@ fn main() {
                     }),
                     ..default()
                 })
-                // Use nearest-neighbor filtering for pixel art.
                 .set(ImagePlugin::default_nearest()),
         )
         .add_plugins(TilemapPlugin)
