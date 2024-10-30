@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.0.34
+## v0.0.35
 
-- Refactored the tilemap functionality to it's own file `src/tilemap.rs`.
-- Added documentation comments to existing functionalities.
+- Added `bevy-egui` and `bevy-inspector-egui` with a boilerplate implementation.
+- Added updated documentation.

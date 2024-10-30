@@ -1,6 +1,10 @@
+use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
+use bevy_egui::EguiPlugin;
+use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 mod camera;
+mod gui;
 mod tilemap;
 
 /// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
@@ -64,8 +68,14 @@ fn main() {
                 // Nearest neighbor filtering is applied to avoid pixel blurring for pixel art.
                 .set(ImagePlugin::default_nearest()),
         )
+        .add_plugins(EguiPlugin)
+        .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
         .add_systems(Startup, startup)
         .add_systems(Update, camera::movement)
+        .add_systems(
+            Update,
+            gui::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
+        )
         .run();
 }

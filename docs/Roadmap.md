@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Versions
-- **Let there be light** ([[docs/versions/v0.1|v0.1]]) - Light, air, and time.
+- **Let there be light** ([[docs/versions/v1.0|v1.0]]) - Light, air, and time.
 - **Let there be a vault between the waters** v0.2 - Water, sky, and weather.
 - **Let dry ground appear** v0.3 - Soil, rocks, and decomposers.
 - **Let the earth put forth vegetation** v0.4 - Plants and pollinators.

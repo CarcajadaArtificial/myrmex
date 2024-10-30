@@ -5,9 +5,9 @@ edition = "2021"
 
 [features]
 default = ["render"]
+bevy_render = ["bevy_egui/render"]
 atlas = []
 render = []
-serde = ["dep:serde"]
 
 [dependencies]
 bevy = { version = "0.14.0", default-features = false, features = [
@@ -15,38 +15,11 @@ bevy = { version = "0.14.0", default-features = false, features = [
     "bevy_render",
     "bevy_asset",
     "png",
-    "ktx2",
     "bevy_winit",
-    "bevy_text",
-    "bevy_sprite",
-    #"file_watcher",
     "multi_threaded",
-    "webgl2",
 ] }
 bevy_ecs_tilemap = "0.14.0"
-log = "0.4"
-serde = { version = "1", features = ["derive"], optional = true }
-ldtk_rust = { version = "0.6" }
-rand = "0.8"
-env_logger = "0.10"
-serde_json = { version = "1.0" }
-tiled = { version = "0.11.0", default-features = false }
-thiserror = { version = "1.0" }
-
-[target.'cfg(unix)'.dev-dependencies.bevy]
-version = "0.14.0"
-default-features = false
-features = [
-    "bevy_core_pipeline",
-    "bevy_render",
-    "bevy_asset",
-    "png",
-    "ktx2",
-    "bevy_winit",
-    "wayland",
-    "x11",
-    "bevy_text",
-    "bevy_sprite",
-    "multi_threaded",
-    "webgl2",
-]
+bevy_egui = "0.30"
+bevy-inspector-egui = "0.27"
+bevy_window = "0.14.0"
+egui="0.29"
