@@ -1,6 +1,5 @@
 # Changelog
 
-## v0.0.31
+## v0.0.32
 
-- Removed empty rendering of a tilemap using `bevy_fast_tilemap`.
-- Added empty rendering of a tilemap using `bevy_ecs_tilemap`.
+- Refactored the helpers module of `bevy_ecs_tilemap`.
