@@ -1,6 +1,31 @@
 use bevy::{input::ButtonInput, math::Vec3, prelude::*, render::camera::Camera};
 
-// A simple camera system for moving and zooming the camera.
+/// A system that enables camera movement based on keyboard input.
+///
+/// The system listens for keyboard inputs (W, A, S, D) to move the camera along the X and Y axes.
+/// The movement is scaled by the time delta to ensure frame-rate independent movement.
+///
+/// ## Parameters
+///
+/// - `time`
+///    A Bevy resource that provides the elapsed time between frames. Used to scale the movement.
+///
+/// - `keyboard_input`
+///    Captures and processes input from the keyboard.
+///
+/// - `query`:
+///    A Bevy query that retrieves the `Transform` and `OrthographicProjection` components of the
+///    camera entity.
+///
+/// ## Behavior
+///
+/// - `W`: Moves the camera upward.
+/// - `S`: Moves the camera downward.
+/// - `A`: Moves the camera left.
+/// - `D`: Moves the camera right.
+///
+/// The movement speed is scaled by `500`` units per second.
+///
 #[allow(dead_code)]
 pub fn movement(
     time: Res<Time>,

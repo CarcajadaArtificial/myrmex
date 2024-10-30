@@ -1,104 +1,24 @@
 use bevy::prelude::*;
-use bevy_ecs_tilemap::helpers::geometry::get_tilemap_center_transform;
 use bevy_ecs_tilemap::prelude::*;
-
 mod camera;
+mod tilemap;
 
-fn setup_tilemap(
-    commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
-    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: &Res<
-        ArrayTextureLoader,
-    >,
-) {
-    let texture_handle: Handle<Image> = asset_server.load("tiles.png");
-
-    let (tilemap_entity, tile_storage, map_size, tile_size, grid_size, map_type) =
-        create_tilemap(commands);
-
-    commands.entity(tilemap_entity).insert(TilemapBundle {
-        grid_size: grid_size.into(),
-        map_type,
-        size: map_size,
-        storage: tile_storage,
-        texture: TilemapTexture::Single(texture_handle.clone()),
-        tile_size,
-        transform: get_tilemap_center_transform(&map_size, &grid_size.into(), &map_type, 0.0),
-        ..Default::default()
-    });
-
-    #[cfg(all(not(feature = "atlas"), feature = "render"))]
-    {
-        array_texture_loader.add(TilemapArrayTexture {
-            texture: TilemapTexture::Single(texture_handle),
-            tile_size,
-            ..Default::default()
-        });
-    }
-}
-
-/// Creates the tilemap entity, initializes tile storage, and fills the tilemap with tiles.
-fn create_tilemap(
-    commands: &mut Commands,
-) -> (
-    Entity,
-    TileStorage,
-    TilemapSize,
-    TilemapTileSize,
-    Vec2,
-    TilemapType,
-) {
-    let map_size = TilemapSize { x: 32, y: 32 };
-    let tilemap_entity = commands.spawn_empty().id();
-    let mut tile_storage = TileStorage::empty(map_size);
-
-    // Fill the tilemap with tiles
-    fill_tilemap(
-        TileTextureIndex(0),
-        map_size,
-        TilemapId(tilemap_entity),
-        commands,
-        &mut tile_storage,
-    );
-
-    let tile_size = TilemapTileSize { x: 16.0, y: 16.0 };
-    let grid_size: TilemapGridSize = tile_size.into();
-    let map_type = TilemapType::default();
-
-    (
-        tilemap_entity,
-        tile_storage,
-        map_size,
-        tile_size,
-        grid_size.into(),
-        map_type,
-    )
-}
-
-/// Helper function to fill the tilemap with tiles.
-fn fill_tilemap(
-    tile_texture_index: TileTextureIndex,
-    map_size: TilemapSize,
-    tilemap_id: TilemapId,
-    commands: &mut Commands,
-    tile_storage: &mut TileStorage,
-) {
-    for x in 0..map_size.x {
-        for y in 0..map_size.y {
-            let tile_pos = TilePos { x, y };
-            let tile_entity = commands
-                .spawn(TileBundle {
-                    position: tile_pos,
-                    texture_index: tile_texture_index,
-                    tilemap_id,
-                    ..Default::default()
-                })
-                .id();
-            tile_storage.set(&tile_pos, tile_entity);
-        }
-    }
-}
-
+/// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
+/// to the `tilemap::setup` function, which handles all necessary components and configuration for
+/// rendering the tilemap.
+///
+/// ## Parameters
+///
+/// - `commands`
+///     A Bevy `Commands` object used to spawn entities and issue component modifications.
+///
+/// - `asset_server`
+///     A Bevy resource responsible for loading assets, such as the tilemap texture.
+///
+/// - `array_texture_loader`
+///     An optional resource (based on feature flags) for loading array textures used when the 'atlas'
+///     feature is disabled and the 'render' feature is enabled.
+///
 fn startup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -108,7 +28,7 @@ fn startup(
 ) {
     commands.spawn(Camera2dBundle::default());
 
-    setup_tilemap(
+    tilemap::setup(
         &mut commands,
         &asset_server,
         #[cfg(all(not(feature = "atlas"), feature = "render"))]
@@ -116,17 +36,32 @@ fn startup(
     );
 }
 
+/// Entry point for the Bevy application.
+///
+/// This function configures the Bevy app by adding necessary plugins and systems, including:
+/// - Default plugins, with custom window settings.
+/// - A tilemap plugin for rendering and managing tilemaps.
+/// - Systems for camera movement and game startup.
+///
+/// # Plugins
+/// - `DefaultPlugins`
+///     Provides default settings for windows, assets, and input.
+///
+/// - `TilemapPlugin`
+///     Adds support for rendering and managing tilemaps.
+///
 fn main() {
     App::new()
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Basic Tilemap Example"),
+                        title: String::from("Myrmex"),
                         ..Default::default()
                     }),
                     ..default()
                 })
+                // Nearest neighbor filtering is applied to avoid pixel blurring for pixel art.
                 .set(ImagePlugin::default_nearest()),
         )
         .add_plugins(TilemapPlugin)
