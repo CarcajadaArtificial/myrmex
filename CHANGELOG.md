@@ -1,5 +1,5 @@
 # Changelog
 
-## v0.0.37
+## v0.0.39
 
-- Refactored the gui so that the side panels are their own functions.
+- Added selectable labels to the left panel for menu options.
