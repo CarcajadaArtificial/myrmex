@@ -5,21 +5,21 @@ use bevy_window::PrimaryWindow;
 mod menu;
 use menu::{MenuOption, MENU_OPTIONS};
 
-/// This function presents a list of panel options as selectable labels in the UI, allowing
-/// the user to switch between different view modes, such as "Controls" and "Entities".
+/// Presents a list of panel options as selectable labels in the UI, allowing
+/// the user to toggle between different views, such as "Controls" and "Entities".
 ///
 /// ## Parameters
 ///
 /// - `ui`
-///     A mutable reference to the `egui::Ui` context, providing UI elements for rendering the options.
+///     A mutable reference to the `egui::Ui` context, used to render selectable labels for panel options.
 ///
 /// - `panel_option`
-///     A mutable reference to the currently selected `MenuOption`, allowing the function to update
-///     the selected panel based on user interaction.
+///     A mutable reference to the currently selected `MenuOption`, enabling the function to update
+///     the active panel based on user selection.
 ///
 /// - `panel_labels`
-///     A slice of labels and their associated `MenuOption` values, defining the selectable options
-///     in the UI.
+///     A slice of tuples containing labels and associated `MenuOption` values,
+///     representing the selectable options in the UI.
 ///
 fn show_panel_options(
     ui: &mut egui::Ui,
@@ -40,23 +40,23 @@ fn show_panel_options(
     }
 }
 
-/// This function provides an interactive, collapsible view of the entity hierarchy, enabling
-/// users to explore and select entities within the `World` for inspection in the right panel.
+/// Provides an interactive, collapsible view of the entity hierarchy, allowing
+/// users to explore and select entities within the `World` for inspection.
 ///
 /// ## Parameters
 ///
 /// - `world`
 ///     A mutable reference to the Bevy `World`, allowing access to entities and components for
-///     displaying the hierarchy.
+///     displaying the hierarchy structure.
 ///
 /// - `ui`
 ///     A mutable reference to the `egui::Ui` context used to render the collapsible hierarchy section.
 ///
 /// - `selected_entities`
-///     A mutable reference to `SelectedEntities`, managing the selection state of entities within the hierarchy.
+///     A mutable reference to `SelectedEntities`, managing the state of selected entities in the hierarchy.
 ///
 /// - `panel_option`
-///     The current `MenuOption`, used to conditionally display the hierarchy view.
+///     The current `MenuOption`, determining if the hierarchy view is displayed.
 ///
 fn show_entity_hierarchy(
     world: &mut World,
@@ -75,21 +75,20 @@ fn show_entity_hierarchy(
     }
 }
 
-/// This function configures the left panel, setting up a UI area for entity hierarchy exploration.
-/// Users can toggle between "Controls" and "Entities" views, with "Entities" revealing a detailed
-/// hierarchy for selection.
+/// Configures the left panel, which provides a UI area for toggling views and exploring
+/// the entity hierarchy. When "Entities" is selected, it displays a detailed hierarchy for selection.
 ///
 /// ## Parameters
 ///
 /// - `world`
-///     A mutable reference to the Bevy `World`, providing access to entities and components for
-///     rendering the hierarchy.
+///     A mutable reference to the Bevy `World`, allowing access to entities and components for
+///     rendering the hierarchy view.
 ///
 /// - `selected_entities`
-///     A mutable reference to `SelectedEntities`, tracking the selection state of entities.
+///     A mutable reference to `SelectedEntities`, tracking the selected entities for inspection.
 ///
 /// - `egui_context`
-///     A mutable reference to `EguiContext`, allowing the function to render the UI for the panel.
+///     A mutable reference to `EguiContext`, enabling the function to render the UI.
 ///
 /// - `panel_option`
 ///     A mutable reference to the current `MenuOption`, enabling panel switching based on user input.
@@ -115,21 +114,24 @@ fn show_left_panel(
         });
 }
 
-/// This function configures the right panel, presenting inspection options for the selected
-/// entity or shared components across multiple selected entities. Users can review and modify
-/// entity data here.
+/// Configures the right panel, presenting inspection options for the selected
+/// entity or shared components across multiple selected entities, allowing users to review and modify entity data.
 ///
 /// ## Parameters
 ///
 /// - `world`
-///     A mutable reference to the Bevy `World`, allowing access to entities and components for
+///     A mutable reference to the Bevy `World`, providing access to entities and components for
 ///     inspection in the right panel.
 ///
 /// - `selected_entities`
-///     A reference to `SelectedEntities`, representing the current entity selection.
+///     A reference to `SelectedEntities`, representing the entities currently selected in the hierarchy view.
 ///
 /// - `egui_context`
-///     A mutable reference to `EguiContext`, allowing the function to render the UI for the inspection panel.
+///     A mutable reference to `EguiContext`, enabling the function to render the UI for the inspection panel.
+///
+/// - `panel_option`
+///     A reference to the current `MenuOption`, determining which panel is currently active.
+///
 fn show_right_panel(
     world: &mut World,
     selected_entities: &SelectedEntities,
@@ -152,9 +154,8 @@ fn show_right_panel(
         });
 }
 
-/// This function sets up an interactive UI for inspecting entities within the Bevy `World`. It uses
-/// `egui` to display two side panels: one for the entity hierarchy and another for inspecting selected
-/// entities or their shared components.
+/// Sets up an interactive UI for inspecting entities within the Bevy `World`, using
+/// `egui` to display side panels for entity hierarchy exploration and inspection of selected entities.
 ///
 /// ## Parameters
 ///
@@ -162,17 +163,21 @@ fn show_right_panel(
 ///     A mutable reference to the Bevy `World`, allowing access to all entities and components.
 ///
 /// - `selected_entities`
-///     A local state that keeps track of the entities currently selected in the hierarchy UI.
+///     Local state that keeps track of the entities currently selected in the hierarchy UI.
+///
+/// - `panel_option`
+///     Local state representing the active `MenuOption`, enabling users to switch between different views.
 ///
 /// ## UI Structure
 ///
-/// - **Left Panel (Hierarchy)**
-///     Displays a collapsible view of the entity hierarchy. The user can select entities from this
-///     view, which will then be available for inspection in the right panel.
+/// - **Left Panel (Hierarchy)**:
+///     Displays a toggleable view of the entity hierarchy. Users can select entities from this
+///     panel, which are then available for inspection in the right panel.
 ///
-/// - **Right Panel (Options)**
-///     Displays the components and data for the currently selected entity (or shared components for
-///     multiple selected entities). The user can inspect and modify entity data here.
+/// - **Right Panel (Options)**:
+///     Displays detailed data for the currently selected entity (or shared components for
+///     multiple selected entities). Users can review and modify entity data here.
+///
 pub fn inspector(
     world: &mut World,
     mut selected_entities: Local<SelectedEntities>,

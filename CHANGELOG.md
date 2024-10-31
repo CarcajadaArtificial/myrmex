@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.42
+
+- Added documentation to the menu options of the gui.
+
 ### v0.0.41
 
 - Refactored the menu selection functionality its own directory and the options
