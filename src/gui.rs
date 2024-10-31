@@ -10,6 +10,40 @@ pub(crate) enum PanelOption {
     Entities,
 }
 
+const PANEL_LABELS: &[(
+    &str,
+    PanelOption,
+    fn(&mut World, &SelectedEntities, &mut egui::Ui),
+)] = &[
+    ("Controls", PanelOption::Controls, |_, _, ui| {
+        ui.heading("Controls");
+        ui.separator();
+        ui.label("W - Move Forward");
+        ui.label("A - Move Left");
+        ui.label("S - Move Backward");
+        ui.label("D - Move Right");
+        ui.separator();
+        ui.label("Press Esc to toggle the UI.");
+    }),
+    (
+        "Entities",
+        PanelOption::Entities,
+        |world, selected_entities, ui| {
+            ui.heading("Entity Options");
+            match selected_entities.as_slice() {
+                &[entity] => {
+                    bevy_inspector_egui::bevy_inspector::ui_for_entity(world, entity, ui);
+                }
+                entities => {
+                    bevy_inspector_egui::bevy_inspector::ui_for_entities_shared_components(
+                        world, entities, ui,
+                    );
+                }
+            }
+        },
+    ),
+];
+
 /// This function presents a list of panel options as selectable labels in the UI, allowing
 /// the user to switch between different view modes, such as "Controls" and "Entities".
 ///
@@ -29,9 +63,13 @@ pub(crate) enum PanelOption {
 fn show_panel_options(
     ui: &mut egui::Ui,
     panel_option: &mut PanelOption,
-    panel_labels: &[(&str, PanelOption)],
+    panel_labels: &[(
+        &str,
+        PanelOption,
+        fn(&mut World, &SelectedEntities, &mut egui::Ui),
+    )],
 ) {
-    for (label, option) in panel_labels {
+    for (label, option, _) in panel_labels {
         if ui
             .selectable_label(*panel_option == *option, *label)
             .clicked()
@@ -101,11 +139,6 @@ fn show_left_panel(
     egui_context: &mut EguiContext,
     panel_option: &mut PanelOption,
 ) {
-    let panel_labels = [
-        ("Controls", PanelOption::Controls),
-        ("Entities", PanelOption::Entities),
-    ];
-
     egui::SidePanel::left("menu")
         .default_width(200.0)
         .resizable(false)
@@ -113,7 +146,7 @@ fn show_left_panel(
             egui::ScrollArea::both().show(ui, |ui| {
                 ui.heading("Myrmex");
 
-                show_panel_options(ui, panel_option, &panel_labels);
+                show_panel_options(ui, panel_option, PANEL_LABELS);
                 show_entity_hierarchy(world, ui, selected_entities, panel_option);
 
                 ui.allocate_space(ui.available_size());
@@ -140,23 +173,17 @@ fn show_right_panel(
     world: &mut World,
     selected_entities: &SelectedEntities,
     egui_context: &mut EguiContext,
+    panel_option: &PanelOption,
 ) {
     egui::SidePanel::right("options")
         .default_width(350.0)
         .resizable(false)
         .show(egui_context.get_mut(), |ui| {
             egui::ScrollArea::both().show(ui, |ui| {
-                ui.heading("Options");
-
-                match selected_entities.as_slice() {
-                    &[entity] => {
-                        bevy_inspector_egui::bevy_inspector::ui_for_entity(world, entity, ui);
-                    }
-                    entities => {
-                        bevy_inspector_egui::bevy_inspector::ui_for_entities_shared_components(
-                            world, entities, ui,
-                        );
-                    }
+                if let Some((_, _, render_fn)) =
+                    PANEL_LABELS.iter().find(|(_, opt, _)| opt == panel_option)
+                {
+                    render_fn(world, selected_entities, ui);
                 }
 
                 ui.allocate_space(ui.available_size());
@@ -201,5 +228,5 @@ pub fn inspector(
         &mut egui_context,
         &mut panel_option,
     );
-    show_right_panel(world, &selected_entities, &mut egui_context);
+    show_right_panel(world, &selected_entities, &mut egui_context, &panel_option);
 }
