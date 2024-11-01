@@ -224,6 +224,8 @@ pub fn home(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
 /// Displays the GUI for creating a universe with inputs for dimensions and a creation button.
 pub fn create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
     if let Ok(mut app_state) = query.get_single_mut() {
+        let mut load_universe = false;
+
         if let AppState::CreatingUniverse { x, y } = &mut *app_state {
             egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
                 ui.heading("Create Universe");
@@ -239,8 +241,13 @@ pub fn create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut Ap
                 // Button to create the universe
                 if ui.button("create").clicked() {
                     println!("universe created");
+                    load_universe = true;
                 }
             });
+        }
+
+        if load_universe {
+            *app_state = AppState::LoadedUniverse;
         }
     }
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.0.45
+
+- Added back the gui and camera testing implementations to the `LoadedUniverse`
+  app state.
+
 ### v0.0.44
 
 - Refactored the functionality from `gui_home()`, `gui_create_universe()`, and

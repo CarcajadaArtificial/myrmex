@@ -34,7 +34,7 @@ fn startup(
     // Set initial AppState component to Home
     commands.spawn(gui::AppState::default());
 
-    // commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 
     // tilemap::setup(
     //     &mut commands,
@@ -64,7 +64,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.44"),
+                        title: String::from("Myrmex - v0.0.45"),
                         ..Default::default()
                     }),
                     ..default()
@@ -91,9 +91,15 @@ fn main() {
                 )
             }),
         )
-        // .add_system(camera::movement)
-        // .add_system(
-        //     gui::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
-        // )
+        .add_systems(
+            Update,
+            (
+                camera::movement,
+                gui::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
+            )
+                .run_if(|query: Query<&gui::AppState>| {
+                    matches!(query.get_single().ok(), Some(gui::AppState::LoadedUniverse))
+                }),
+        )
         .run();
 }
