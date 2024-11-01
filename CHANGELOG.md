@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.0.44
+
+- Refactored the functionality from `gui_home()`, `gui_create_universe()`, and
+  `AppState` to the `gui` module.
+
 ### v0.0.43
 
 - Removed testing implementations of tilemaps and gui via comments.

@@ -1,24 +1,12 @@
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
-use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
 mod camera;
 mod gui;
 mod tilemap;
-
-/// Enum to represent the state of the app.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Component, Default)]
-enum AppState {
-    #[default]
-    Home,
-    CreatingUniverse {
-        x: i32,
-        y: i32,
-    },
-    LoadedUniverse,
-}
 
 /// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
 /// to the `tilemap::setup` function, which handles all necessary components and configuration for
@@ -44,7 +32,7 @@ fn startup(
     >,
 ) {
     // Set initial AppState component to Home
-    commands.spawn(AppState::default());
+    commands.spawn(gui::AppState::default());
 
     // commands.spawn(Camera2dBundle::default());
 
@@ -54,42 +42,6 @@ fn startup(
     //     #[cfg(all(not(feature = "atlas"), feature = "render"))]
     //     &array_texture_loader,
     // );
-}
-
-/// Displays the GUI with a header and button to transition to the "CreatingUniverse" state.
-fn gui_home(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
-    if let Ok(mut app_state) = query.get_single_mut() {
-        egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
-            ui.heading("Myrmex");
-            if ui.button("create universe").clicked() {
-                *app_state = AppState::CreatingUniverse { x: 32, y: 32 };
-            }
-        });
-    }
-}
-
-/// Displays the GUI for creating a universe with inputs for dimensions and a creation button.
-fn gui_create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
-    if let Ok(mut app_state) = query.get_single_mut() {
-        if let AppState::CreatingUniverse { x, y } = &mut *app_state {
-            egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
-                ui.heading("Create Universe");
-
-                // Input fields for x and y dimensions with a range of 32 to 256
-                ui.horizontal(|ui| {
-                    ui.label("x:");
-                    ui.add(egui::DragValue::new(x).range(32..=256));
-                    ui.label("y:");
-                    ui.add(egui::DragValue::new(y).range(32..=256));
-                });
-
-                // Button to create the universe
-                if ui.button("create").clicked() {
-                    println!("universe created");
-                }
-            });
-        }
-    }
 }
 
 /// Entry point for the Bevy application.
@@ -112,7 +64,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.43"),
+                        title: String::from("Myrmex - v0.0.44"),
                         ..Default::default()
                     }),
                     ..default()
@@ -126,16 +78,16 @@ fn main() {
         .add_systems(Startup, startup)
         .add_systems(
             Update,
-            gui_home.run_if(|query: Query<&AppState>| {
-                matches!(query.get_single().ok(), Some(AppState::Home))
+            gui::home.run_if(|query: Query<&gui::AppState>| {
+                matches!(query.get_single().ok(), Some(gui::AppState::Home))
             }),
         )
         .add_systems(
             Update,
-            gui_create_universe.run_if(|query: Query<&AppState>| {
+            gui::create_universe.run_if(|query: Query<&gui::AppState>| {
                 matches!(
                     query.get_single().ok(),
-                    Some(AppState::CreatingUniverse { .. })
+                    Some(gui::AppState::CreatingUniverse { .. })
                 )
             }),
         )

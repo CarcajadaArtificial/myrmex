@@ -1,9 +1,21 @@
 use bevy::prelude::*;
-use bevy_egui::EguiContext;
+use bevy_egui::{egui, EguiContext, EguiContexts};
 use bevy_inspector_egui::bevy_inspector::hierarchy::SelectedEntities;
 use bevy_window::PrimaryWindow;
 mod menu;
 use menu::{MenuOption, MENU_OPTIONS};
+
+/// Enum to represent the state of the app.
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Component, Default)]
+pub enum AppState {
+    #[default]
+    Home,
+    CreatingUniverse {
+        x: i32,
+        y: i32,
+    },
+    LoadedUniverse,
+}
 
 /// Presents a list of panel options as selectable labels in the UI, allowing
 /// the user to toggle between different views, such as "Controls" and "Entities".
@@ -195,4 +207,40 @@ pub fn inspector(
         &mut panel_option,
     );
     show_right_panel(world, &selected_entities, &mut egui_context, &panel_option);
+}
+
+/// Displays the GUI with a header and button to transition to the "CreatingUniverse" state.
+pub fn home(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
+    if let Ok(mut app_state) = query.get_single_mut() {
+        egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
+            ui.heading("Myrmex");
+            if ui.button("create universe").clicked() {
+                *app_state = AppState::CreatingUniverse { x: 32, y: 32 };
+            }
+        });
+    }
+}
+
+/// Displays the GUI for creating a universe with inputs for dimensions and a creation button.
+pub fn create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
+    if let Ok(mut app_state) = query.get_single_mut() {
+        if let AppState::CreatingUniverse { x, y } = &mut *app_state {
+            egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
+                ui.heading("Create Universe");
+
+                // Input fields for x and y dimensions with a range of 32 to 256
+                ui.horizontal(|ui| {
+                    ui.label("x:");
+                    ui.add(egui::DragValue::new(x).range(32..=256));
+                    ui.label("y:");
+                    ui.add(egui::DragValue::new(y).range(32..=256));
+                });
+
+                // Button to create the universe
+                if ui.button("create").clicked() {
+                    println!("universe created");
+                }
+            });
+        }
+    }
 }
