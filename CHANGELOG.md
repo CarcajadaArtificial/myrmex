@@ -1,5 +1,11 @@
 # Changelog
 
+### v0.0.43
+
+- Removed testing implementations of tilemaps and gui via comments.
+- Added Home view and universcre creation view for creating and viewing save
+  files.
+
 ### v0.0.42
 
 - Added documentation to the menu options of the gui.
