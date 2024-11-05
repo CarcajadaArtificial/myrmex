@@ -1,21 +1,7 @@
 use bevy::prelude::*;
-use bevy_egui::{egui, EguiContext, EguiContexts};
+use bevy_egui::{egui, EguiContext};
 use bevy_inspector_egui::bevy_inspector::hierarchy::SelectedEntities;
 use bevy_window::PrimaryWindow;
-mod menu;
-use menu::{MenuOption, MENU_OPTIONS};
-
-/// Enum to represent the state of the app.
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Component, Default)]
-pub enum AppState {
-    #[default]
-    Home,
-    CreatingUniverse {
-        x: i32,
-        y: i32,
-    },
-    LoadedUniverse,
-}
 
 /// Presents a list of panel options as selectable labels in the UI, allowing
 /// the user to toggle between different views, such as "Controls" and "Entities".
@@ -209,45 +195,86 @@ pub fn inspector(
     show_right_panel(world, &selected_entities, &mut egui_context, &panel_option);
 }
 
-/// Displays the GUI with a header and button to transition to the "CreatingUniverse" state.
-pub fn home(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
-    if let Ok(mut app_state) = query.get_single_mut() {
-        egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
-            ui.heading("Myrmex");
-            if ui.button("create universe").clicked() {
-                *app_state = AppState::CreatingUniverse { x: 32, y: 32 };
-            }
-        });
+#[derive(PartialEq, Clone, Default)]
+pub(crate) enum MenuOption {
+    /// The default menu option that displays camera and control options.
+    #[default]
+    Controls,
+    /// A menu option that displays information related to entities in the world.
+    Entities,
+}
+
+/// Renders the controls panel in the UI, providing an overview of camera controls
+/// and key bindings.
+///
+/// ## Parameters
+///
+/// - `world`
+///     A mutable reference to the `World` object in Bevy, used to access game state data if needed
+///     (currently unused in this function).
+///
+/// - `selected_entities`
+///     A reference to the selected entities within the UI, allowing UI rendering logic
+///     based on entity selections (currently unused in this function).
+///
+/// - `ui`
+///     A mutable reference to the `egui::Ui` context, used to render the control options.
+///
+fn render_controls(_: &mut World, _: &SelectedEntities, ui: &mut egui::Ui) {
+    ui.heading("Controls");
+    ui.separator();
+    ui.label("Camera controls:");
+    ui.monospace("W - Move up");
+    ui.monospace("A - Move left");
+    ui.monospace("S - Move backward");
+    ui.monospace("D - Move right");
+    ui.separator();
+    ui.monospace("Esc - Toggle full screen");
+}
+
+/// Renders the entities panel in the UI, displaying detailed information about selected entities.
+/// If a single entity is selected, it displays individual details; if multiple entities are selected,
+/// it displays shared components.
+///
+/// ## Parameters
+///
+/// - `world`
+///     A mutable reference to the `World` object, enabling access to entity data within the game
+///     world, which can be used for displaying detailed information about entities.
+///
+/// - `selected_entities`
+///     A reference to the currently selected entities in the inspector UI, allowing
+///     this function to display either individual or shared entity data based on the selection.
+///
+/// - `ui`
+///     A mutable reference to the `egui::Ui` context, enabling UI elements to display entity data.
+///
+fn render_entities(world: &mut World, selected_entities: &SelectedEntities, ui: &mut egui::Ui) {
+    ui.heading("Entity Options");
+    match selected_entities.as_slice() {
+        &[entity] => {
+            bevy_inspector_egui::bevy_inspector::ui_for_entity(world, entity, ui);
+        }
+        entities => {
+            bevy_inspector_egui::bevy_inspector::ui_for_entities_shared_components(
+                world, entities, ui,
+            );
+        }
     }
 }
 
-/// Displays the GUI for creating a universe with inputs for dimensions and a creation button.
-pub fn create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
-    if let Ok(mut app_state) = query.get_single_mut() {
-        let mut load_universe = false;
-
-        if let AppState::CreatingUniverse { x, y } = &mut *app_state {
-            egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
-                ui.heading("Create Universe");
-
-                // Input fields for x and y dimensions with a range of 32 to 256
-                ui.horizontal(|ui| {
-                    ui.label("x:");
-                    ui.add(egui::DragValue::new(x).range(32..=256));
-                    ui.label("y:");
-                    ui.add(egui::DragValue::new(y).range(32..=256));
-                });
-
-                // Button to create the universe
-                if ui.button("create").clicked() {
-                    println!("universe created");
-                    load_universe = true;
-                }
-            });
-        }
-
-        if load_universe {
-            *app_state = AppState::LoadedUniverse;
-        }
-    }
-}
+/// A constant array of tuples representing the menu options available in the UI.
+/// Each tuple contains a label, a `MenuOption` variant, and a function pointer to
+/// the corresponding render function.
+///
+/// - The `Controls` option renders camera and key binding information.
+/// - The `Entities` option displays entity-related details for selected entities.
+///
+pub const MENU_OPTIONS: &[(
+    &str,
+    MenuOption,
+    fn(&mut World, &SelectedEntities, &mut egui::Ui),
+)] = &[
+    ("Controls", MenuOption::Controls, render_controls),
+    ("Entities", MenuOption::Entities, render_entities),
+];

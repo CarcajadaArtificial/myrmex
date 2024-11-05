@@ -4,9 +4,10 @@ use bevy_ecs_tilemap::prelude::*;
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
+mod app;
 mod camera;
-mod gui;
-mod tilemap;
+mod home;
+mod menu;
 
 /// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
 /// to the `tilemap::setup` function, which handles all necessary components and configuration for
@@ -24,24 +25,9 @@ mod tilemap;
 ///     An optional resource (based on feature flags) for loading array textures used when the 'atlas'
 ///     feature is disabled and the 'render' feature is enabled.
 ///
-fn startup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: Res<
-        ArrayTextureLoader,
-    >,
-) {
-    // Set initial AppState component to Home
-    commands.spawn(gui::AppState::default());
-
+fn startup(mut commands: Commands) {
+    commands.spawn(home::AppState::default());
     commands.spawn(Camera2dBundle::default());
-
-    // tilemap::setup(
-    //     &mut commands,
-    //     &asset_server,
-    //     #[cfg(all(not(feature = "atlas"), feature = "render"))]
-    //     &array_texture_loader,
-    // );
 }
 
 /// Entry point for the Bevy application.
@@ -64,7 +50,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.45"),
+                        title: String::from("Myrmex - v0.0.46"),
                         ..Default::default()
                     }),
                     ..default()
@@ -76,30 +62,19 @@ fn main() {
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
         .add_systems(Startup, startup)
+        .add_systems(Update, home::home.run_if(home::AppState::is_home))
         .add_systems(
             Update,
-            gui::home.run_if(|query: Query<&gui::AppState>| {
-                matches!(query.get_single().ok(), Some(gui::AppState::Home))
-            }),
-        )
-        .add_systems(
-            Update,
-            gui::create_universe.run_if(|query: Query<&gui::AppState>| {
-                matches!(
-                    query.get_single().ok(),
-                    Some(gui::AppState::CreatingUniverse { .. })
-                )
-            }),
+            home::create_universe.run_if(home::AppState::is_creating_universe),
         )
         .add_systems(
             Update,
             (
                 camera::movement,
-                gui::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
+                menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
+                app::run_universe,
             )
-                .run_if(|query: Query<&gui::AppState>| {
-                    matches!(query.get_single().ok(), Some(gui::AppState::LoadedUniverse))
-                }),
+                .run_if(home::AppState::is_loaded_universe),
         )
         .run();
 }

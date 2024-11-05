@@ -1,5 +1,12 @@
 # Changelog
 
+### v0.0.46
+
+- Refactored the AppState functionality to the `home.rs` module.
+- Refactored the `run_universe()` function to the `app/mod.rs` module.
+- Refactored the `gui/mod.rs` functionality to the `menu.rs` module.
+- Updated the `v0.1.md` scope document.
+
 ### v0.0.45
 
 - Added back the gui and camera testing implementations to the `LoadedUniverse`
