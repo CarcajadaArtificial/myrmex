@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.48
+
+- Removed the AppState functionality in favor of the `GameState` resource.
+
 ### v0.0.47
 
 - Refactored the AppState functionality to remove the `CreatingUniverse` scene.

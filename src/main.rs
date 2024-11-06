@@ -26,9 +26,8 @@ mod menu;
 ///     feature is disabled and the 'render' feature is enabled.
 ///
 fn startup(mut commands: Commands) {
-    commands.spawn(home::AppState::default());
     commands.spawn(Camera2dBundle::default());
-    commands.insert_resource(home::HomeState::default());
+    commands.init_resource::<home::GameState>();
 }
 
 /// Entry point for the Bevy application.
@@ -52,7 +51,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.47"),
+                        title: String::from("Myrmex - v0.0.48"),
                         ..Default::default()
                     }),
                     ..default()
@@ -62,10 +61,9 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
-        // Initialize HomeState at app startup
-        .init_resource::<home::HomeState>()
+        .init_resource::<home::GameState>()
         .add_systems(Startup, startup)
-        .add_systems(Update, home::home.run_if(home::AppState::is_home))
+        .add_systems(Update, home::home.run_if(home::is_home))
         .add_systems(
             Update,
             (
@@ -73,7 +71,7 @@ fn main() {
                 menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
                 app::run_universe,
             )
-                .run_if(home::AppState::is_universe),
+                .run_if(home::is_universe),
         )
         .run();
 }
