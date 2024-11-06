@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[derive(Resource, Default)]
 pub struct GameState {
     pub is_universe_loaded: bool,
-    pub universe_dimensions: (u32, u32),
+    pub input_universe_dimensions: (u32, u32),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -28,8 +28,8 @@ impl GameState {
 
         let universe_data = UniverseData {
             id: id.clone(),
-            width: self.universe_dimensions.0,
-            height: self.universe_dimensions.1,
+            width: self.input_universe_dimensions.0,
+            height: self.input_universe_dimensions.1,
             created_at: Utc::now().to_rfc3339(),
         };
 

@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.0.51
+
+- Added a change of scene after selecting a save file.
+- Renamed GameState::universe_dimensions to input_universe_dimensions.
+
 ### v0.0.50
 
 - Added the functionality to list and read save files.

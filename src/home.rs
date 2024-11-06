@@ -13,9 +13,13 @@ pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<GameState>) 
         ui.heading("Create New Universe");
         ui.horizontal(|ui| {
             ui.label("Width:");
-            ui.add(egui::DragValue::new(&mut game_state.universe_dimensions.0).range(32..=256));
+            ui.add(
+                egui::DragValue::new(&mut game_state.input_universe_dimensions.0).range(32..=256),
+            );
             ui.label("Height:");
-            ui.add(egui::DragValue::new(&mut game_state.universe_dimensions.1).range(32..=256));
+            ui.add(
+                egui::DragValue::new(&mut game_state.input_universe_dimensions.1).range(32..=256),
+            );
         });
 
         if ui.button("Create Universe").clicked() {
@@ -46,6 +50,7 @@ pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<GameState>) 
                             match fs::read_to_string(file_path) {
                                 Ok(contents) => {
                                     println!("File contents: {}", contents);
+                                    game_state.is_universe_loaded = true;
                                 }
                                 Err(e) => {
                                     println!("Error reading file: {}", e);
