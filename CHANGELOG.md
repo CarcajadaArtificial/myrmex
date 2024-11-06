@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.50
+
+- Added the functionality to list and read save files.
+
 ### v0.0.49
 
 - Added save file creation functionality.
