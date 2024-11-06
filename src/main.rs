@@ -28,6 +28,7 @@ mod menu;
 fn startup(mut commands: Commands) {
     commands.spawn(home::AppState::default());
     commands.spawn(Camera2dBundle::default());
+    commands.insert_resource(home::HomeState::default());
 }
 
 /// Entry point for the Bevy application.
@@ -44,29 +45,27 @@ fn startup(mut commands: Commands) {
 /// - `TilemapPlugin`
 ///     Adds support for rendering and managing tilemaps.
 ///
+
 fn main() {
     App::new()
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.46"),
+                        title: String::from("Myrmex - v0.0.47"),
                         ..Default::default()
                     }),
                     ..default()
                 })
-                // Nearest neighbor filtering is applied to avoid pixel blurring for pixel art.
                 .set(ImagePlugin::default_nearest()),
         )
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
+        // Initialize HomeState at app startup
+        .init_resource::<home::HomeState>()
         .add_systems(Startup, startup)
         .add_systems(Update, home::home.run_if(home::AppState::is_home))
-        .add_systems(
-            Update,
-            home::create_universe.run_if(home::AppState::is_creating_universe),
-        )
         .add_systems(
             Update,
             (
@@ -74,7 +73,7 @@ fn main() {
                 menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
                 app::run_universe,
             )
-                .run_if(home::AppState::is_loaded_universe),
+                .run_if(home::AppState::is_universe),
         )
         .run();
 }

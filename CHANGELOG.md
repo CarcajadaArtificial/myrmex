@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.47
+
+- Refactored the AppState functionality to remove the `CreatingUniverse` scene.
+
 ### v0.0.46
 
 - Refactored the AppState functionality to the `home.rs` module.

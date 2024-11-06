@@ -1,13 +1,16 @@
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
-/// Enum to represent the state of the app.
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Component, Default)]
 pub enum AppState {
     #[default]
     Home,
-    CreatingUniverse,
-    LoadedUniverse,
+    Universe,
+}
+
+#[derive(Resource, Default)]
+pub struct HomeState {
+    universe_dimensions: (u32, u32),
 }
 
 impl AppState {
@@ -15,52 +18,41 @@ impl AppState {
         matches!(query.get_single().ok(), Some(AppState::Home))
     }
 
-    pub fn is_creating_universe(query: Query<&AppState>) -> bool {
-        matches!(query.get_single().ok(), Some(AppState::CreatingUniverse))
-    }
-
-    pub fn is_loaded_universe(query: Query<&AppState>) -> bool {
-        matches!(query.get_single().ok(), Some(AppState::LoadedUniverse))
+    pub fn is_universe(query: Query<&AppState>) -> bool {
+        matches!(query.get_single().ok(), Some(AppState::Universe))
     }
 }
 
-/// Displays the GUI with a header and button to transition to the "CreatingUniverse" state.
-pub fn home(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
+pub fn home(
+    mut egui_contexts: EguiContexts,
+    mut query: Query<&mut AppState>,
+    mut home_state: ResMut<HomeState>,
+) {
     if let Ok(mut app_state) = query.get_single_mut() {
         egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
             ui.heading("Myrmex");
-            if ui.button("create universe").clicked() {
-                *app_state = AppState::CreatingUniverse;
-            }
-        });
-    }
-}
 
-/// Displays the GUI for creating a universe with inputs for dimensions and a creation button.
-pub fn create_universe(mut egui_contexts: EguiContexts, mut query: Query<&mut AppState>) {
-    if let Ok(mut app_state) = query.get_single_mut() {
-        let mut is_universe_created = false;
+            ui.add_space(20.0);
 
-        if let AppState::CreatingUniverse = &mut *app_state {
-            egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
-                ui.heading("Create Universe");
-
-                ui.horizontal(|ui| {
-                    ui.label("x:");
-                    // ui.add(egui::DragValue::new(x).range(32..=256));
-                    ui.label("y:");
-                    // ui.add(egui::DragValue::new(y).range(32..=256));
-                });
-
-                if ui.button("create").clicked() {
-                    println!("universe created");
-                    is_universe_created = true;
-                }
+            // Universe Creation Section
+            ui.heading("Create New Universe");
+            ui.horizontal(|ui| {
+                ui.label("Width:");
+                ui.add(egui::DragValue::new(&mut home_state.universe_dimensions.0).range(32..=256));
+                ui.label("Height:");
+                ui.add(egui::DragValue::new(&mut home_state.universe_dimensions.1).range(32..=256));
             });
-        }
 
-        if is_universe_created {
-            *app_state = AppState::Home;
-        }
+            if ui.button("Create Universe").clicked() {
+                // Here you would initialize your universe with home_state.universe_dimensions
+                *app_state = AppState::Universe;
+            }
+
+            ui.add_space(20.0);
+
+            // Saved Universes Section (if you have this feature)
+            ui.heading("Saved Universes");
+            // Add your saved universes list/grid here
+        });
     }
 }
