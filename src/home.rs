@@ -1,20 +1,6 @@
-// home.rs
+use super::state::GameState;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
-
-#[derive(Resource, Default)]
-pub struct GameState {
-    pub is_universe_loaded: bool,
-    pub universe_dimensions: (u32, u32),
-}
-
-pub fn is_home(game_state: Res<GameState>) -> bool {
-    !game_state.is_universe_loaded
-}
-
-pub fn is_universe(game_state: Res<GameState>) -> bool {
-    game_state.is_universe_loaded
-}
 
 pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<GameState>) {
     egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
@@ -31,12 +17,19 @@ pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<GameState>) 
         });
 
         if ui.button("Create Universe").clicked() {
-            game_state.is_universe_loaded = true;
+            match game_state.save_universe() {
+                Ok(universe_data) => {
+                    println!("Universe created and saved with ID: {}", universe_data.id);
+                    game_state.is_universe_loaded = true;
+                }
+                Err(e) => {
+                    println!("Error saving universe: {}", e);
+                }
+            }
         }
 
         ui.add_space(20.0);
 
         ui.heading("Saved Universes");
-        // Add saved universes list here
     });
 }

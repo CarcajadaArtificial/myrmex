@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.0.49
+
+- Added save file creation functionality.
+- Refactored the app state to its own file.
+
 ### v0.0.48
 
 - Removed the AppState functionality in favor of the `GameState` resource.
