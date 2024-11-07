@@ -8,7 +8,7 @@ mod app;
 mod camera;
 mod home;
 mod menu;
-mod state;
+mod save;
 
 /// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
 /// to the `tilemap::setup` function, which handles all necessary components and configuration for
@@ -28,7 +28,7 @@ mod state;
 ///
 fn startup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
-    commands.init_resource::<state::HomeState>();
+    commands.init_resource::<home::HomeState>();
 }
 
 /// Entry point for the Bevy application.
@@ -52,7 +52,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.53"),
+                        title: String::from("Myrmex - v0.0.54"),
                         ..Default::default()
                     }),
                     ..default()
@@ -62,9 +62,9 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
-        .init_resource::<state::HomeState>()
+        .init_resource::<home::HomeState>()
         .add_systems(Startup, startup)
-        .add_systems(Update, home::home.run_if(not(state::is_universe_loaded)))
+        .add_systems(Update, home::home.run_if(not(home::is_universe_loaded)))
         .add_systems(
             Update,
             (
@@ -72,7 +72,7 @@ fn main() {
                 menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
                 app::run_universe,
             )
-                .run_if(state::is_universe_loaded),
+                .run_if(home::is_universe_loaded),
         )
         .run();
 }

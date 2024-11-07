@@ -1,13 +1,23 @@
-use super::state::HomeState;
+use crate::save;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use std::fs;
 use std::path::Path;
 
+#[derive(Resource, Default)]
+pub struct HomeState {
+    pub is_universe_loaded: bool,
+    pub input_universe_dimensions: (u32, u32),
+}
+
 // Constants for universe dimensions and UI spacing
 const MIN_DIMENSION: i32 = 32;
 const MAX_DIMENSION: i32 = 256;
 const SECTION_SPACING: f32 = 20.0;
+
+pub fn is_universe_loaded(game_state: Res<HomeState>) -> bool {
+    game_state.is_universe_loaded
+}
 
 /// Main home screen system that renders the entire UI interface.
 /// Manages the layout of three main sections:
@@ -43,7 +53,7 @@ fn render_universe_creator(ui: &mut egui::Ui, game_state: &mut HomeState) {
         );
     });
     if ui.button("Create Universe").clicked() {
-        match game_state.save_universe() {
+        match save::save_universe(game_state.input_universe_dimensions) {
             Ok(universe_data) => {
                 println!("Universe created and saved with ID: {}", universe_data.id);
             }
