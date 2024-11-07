@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.52
+
+- Refacred the home module.
+
 ### v0.0.51
 
 - Added a change of scene after selecting a save file.
