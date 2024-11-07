@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.53
+
+- Renamed GameState to HomeState, and UniverseData to SaveFileData.
+
 ### v0.0.52
 
 - Refacred the home module.

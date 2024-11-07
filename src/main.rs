@@ -28,7 +28,7 @@ mod state;
 ///
 fn startup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
-    commands.init_resource::<state::GameState>();
+    commands.init_resource::<state::HomeState>();
 }
 
 /// Entry point for the Bevy application.
@@ -52,7 +52,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.52"),
+                        title: String::from("Myrmex - v0.0.53"),
                         ..Default::default()
                     }),
                     ..default()
@@ -62,7 +62,7 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
-        .init_resource::<state::GameState>()
+        .init_resource::<state::HomeState>()
         .add_systems(Startup, startup)
         .add_systems(Update, home::home.run_if(not(state::is_universe_loaded)))
         .add_systems(
