@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.57
+
+- Added closable windows for the menu module.
+
 ### v0.0.56
 
 - Refactored the menu module.

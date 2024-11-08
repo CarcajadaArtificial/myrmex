@@ -10,41 +10,9 @@ mod home;
 mod menu;
 mod save;
 
-/// This function spawns a 2D camera and sets up the tilemap system. The tilemap setup is delegated
-/// to the `tilemap::setup` function, which handles all necessary components and configuration for
-/// rendering the tilemap.
-///
-/// ## Parameters
-///
-/// - `commands`
-///     A Bevy `Commands` object used to spawn entities and issue component modifications.
-///
-/// - `asset_server`
-///     A Bevy resource responsible for loading assets, such as the tilemap texture.
-///
-/// - `array_texture_loader`
-///     An optional resource (based on feature flags) for loading array textures used when the 'atlas'
-///     feature is disabled and the 'render' feature is enabled.
-///
 fn startup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
-    commands.init_resource::<home::HomeState>();
 }
-
-/// Entry point for the Bevy application.
-///
-/// This function configures the Bevy app by adding necessary plugins and systems, including:
-/// - Default plugins, with custom window settings.
-/// - A tilemap plugin for rendering and managing tilemaps.
-/// - Systems for camera movement and game startup.
-///
-/// # Plugins
-/// - `DefaultPlugins`
-///     Provides default settings for windows, assets, and input.
-///
-/// - `TilemapPlugin`
-///     Adds support for rendering and managing tilemaps.
-///
 
 fn main() {
     App::new()
@@ -52,7 +20,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.56"),
+                        title: String::from("Myrmex - v0.0.57"),
                         ..Default::default()
                     }),
                     ..default()
@@ -63,6 +31,7 @@ fn main() {
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
         .init_resource::<home::HomeState>()
+        .init_resource::<menu::MenuWindowsState>()
         .add_systems(Startup, startup)
         .add_systems(Update, home::home.run_if(not(home::is_universe_loaded)))
         .add_systems(
