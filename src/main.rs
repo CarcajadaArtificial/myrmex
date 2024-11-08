@@ -52,7 +52,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.55"),
+                        title: String::from("Myrmex - v0.0.56"),
                         ..Default::default()
                     }),
                     ..default()

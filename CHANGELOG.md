@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.56
+
+- Refactored the menu module.
+
 ### v0.0.55
 
 - Added windows as menu options instead of a right panel.
