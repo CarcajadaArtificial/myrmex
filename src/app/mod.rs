@@ -1,19 +1,16 @@
+use crate::home;
 use bevy::prelude::*;
-use bevy_ecs_tilemap::prelude::*;
-
 mod tilemap;
 
-pub fn run_universe(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: Res<
-        ArrayTextureLoader,
-    >,
-) {
-    tilemap::setup(
-        &mut commands,
-        &asset_server,
-        #[cfg(all(not(feature = "atlas"), feature = "render"))]
-        &array_texture_loader,
-    );
+pub struct AppPlugin;
+
+impl Plugin for AppPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<tilemap::TilemapConfig>()
+            .add_systems(Startup, tilemap::setup)
+            .add_systems(
+                Update,
+                tilemap::update_tilemap_size.run_if(home::is_universe_loaded),
+            );
+    }
 }

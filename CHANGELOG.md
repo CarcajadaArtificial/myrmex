@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.58
+
+- Added a tilemap setup rendering for optimization.
+
 ### v0.0.57
 
 - Added closable windows for the menu module.

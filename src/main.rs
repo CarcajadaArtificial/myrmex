@@ -20,7 +20,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.57"),
+                        title: String::from("Myrmex - v0.0.58"),
                         ..Default::default()
                     }),
                     ..default()
@@ -30,6 +30,7 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(TilemapPlugin)
+        .add_plugins(app::AppPlugin)
         .init_resource::<home::HomeState>()
         .init_resource::<menu::MenuWindowsState>()
         .add_systems(Startup, startup)
@@ -39,7 +40,6 @@ fn main() {
             (
                 camera::movement,
                 menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
-                app::run_universe,
             )
                 .run_if(home::is_universe_loaded),
         )

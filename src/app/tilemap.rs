@@ -2,51 +2,111 @@ use bevy::prelude::*;
 use bevy_ecs_tilemap::helpers::geometry::get_tilemap_center_transform;
 use bevy_ecs_tilemap::prelude::*;
 
-/// This function handles the initialization of the tilemap system, including loading the texture for
-/// the tiles, creating and configuring the tilemap entity, and inserting it into the Bevy ECS.
-/// It also supports adding array textures if the relevant feature is enabled.
-///
-/// ## Parameters
-/// - `commands`
-///     A mutable reference to the Bevy `Commands` object used to create entities and issue commands.
-///
-/// - `asset_server`
-///     A reference to the Bevy `AssetServer` used to load textures and other assets.
-///
-/// - `array_texture_loader`
-///     Conditionally included, this is a reference to the array texture loader used when specific
-///     feature flags are enabled for tilemap rendering.
-pub fn setup(
-    commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
-    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: &Res<
-        ArrayTextureLoader,
-    >,
-) {
-    let texture_handle: Handle<Image> = asset_server.load("tiles.png");
+// Component to mark that tilemap is initialized
+#[derive(Component)]
+pub struct TilemapInitialized;
 
-    let (tilemap_entity, tile_storage, map_size, tile_size, grid_size, map_type) = create(commands);
+// Resource to store tilemap configuration
+#[derive(Resource)]
+pub struct TilemapConfig {
+    pub size: TilemapSize,
+    pub tile_size: TilemapTileSize,
+}
 
-    commands.entity(tilemap_entity).insert(TilemapBundle {
-        grid_size: grid_size.into(),
-        map_type,
-        size: map_size,
-        storage: tile_storage,
-        texture: TilemapTexture::Single(texture_handle.clone()),
-        tile_size,
-        transform: get_tilemap_center_transform(&map_size, &grid_size.into(), &map_type, 0.0),
-        ..Default::default()
-    });
-
-    #[cfg(all(not(feature = "atlas"), feature = "render"))]
-    {
-        array_texture_loader.add(TilemapArrayTexture {
-            texture: TilemapTexture::Single(texture_handle),
-            tile_size,
-            ..Default::default()
-        });
+impl Default for TilemapConfig {
+    fn default() -> Self {
+        Self {
+            size: TilemapSize { x: 32, y: 32 },
+            tile_size: TilemapTileSize { x: 16.0, y: 16.0 },
+        }
     }
 }
+
+// Initial setup system
+pub fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    #[cfg(all(not(feature = "atlas"), feature = "render"))] array_texture_loader: Res<
+        ArrayTextureLoader,
+    >,
+    query: Query<Entity, With<TilemapInitialized>>,
+) {
+    // Only setup if tilemap doesn't exist
+    if query.is_empty() {
+        let texture_handle: Handle<Image> = asset_server.load("tiles.png");
+
+        let (tilemap_entity, tile_storage, map_size, tile_size, grid_size, map_type) =
+            create(&mut commands);
+
+        commands.entity(tilemap_entity).insert((
+            TilemapBundle {
+                grid_size: grid_size.into(),
+                map_type,
+                size: map_size,
+                storage: tile_storage,
+                texture: TilemapTexture::Single(texture_handle.clone()),
+                tile_size,
+                transform: get_tilemap_center_transform(
+                    &map_size,
+                    &grid_size.into(),
+                    &map_type,
+                    0.0,
+                ),
+                ..Default::default()
+            },
+            TilemapInitialized,
+        ));
+
+        #[cfg(all(not(feature = "atlas"), feature = "render"))]
+        {
+            array_texture_loader.add(TilemapArrayTexture {
+                texture: TilemapTexture::Single(texture_handle),
+                tile_size,
+                ..Default::default()
+            });
+        }
+    }
+}
+
+// System to update tilemap size when needed
+pub fn update_tilemap_size(
+    mut commands: Commands,
+    config: Res<TilemapConfig>,
+    mut query: Query<(Entity, &mut TilemapSize, &mut Transform), With<TilemapInitialized>>,
+) {
+    if let Ok((entity, mut size, mut transform)) = query.get_single_mut() {
+        if size.x != config.size.x || size.y != config.size.y {
+            // Update size
+            *size = config.size;
+
+            // Recreate tile storage with new size
+            let mut tile_storage = TileStorage::empty(config.size);
+
+            // Refill tiles
+            fill(
+                TileTextureIndex(0),
+                config.size,
+                TilemapId(entity),
+                &mut commands,
+                &mut tile_storage,
+            );
+
+            // Update transform
+            let grid_size: TilemapGridSize = config.tile_size.into();
+            *transform = get_tilemap_center_transform(
+                &config.size,
+                &grid_size.into(),
+                &TilemapType::default(),
+                0.0,
+            );
+
+            // Update storage
+            commands.entity(entity).insert(tile_storage);
+        }
+    }
+}
+
+// Existing create and fill functions remain the same...
 
 /// This function spawns an empty tilemap entity and sets up the storage for the tiles. It then
 /// populates the tilemap by calling the `fill` function, which places tiles at every position within
