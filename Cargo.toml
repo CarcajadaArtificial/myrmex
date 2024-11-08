@@ -35,10 +35,10 @@ opt-level = 3
 [profile.dev]
 opt-level = 1
 
-# # Most aggressive optimizations possible
-# [profile.release]
-# lto = true
-# opt-level = 3
-# codegen-units = 1
-# incremental = false
-# debug = false
+# Most aggressive optimizations possible
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
+incremental = false
+debug = false
