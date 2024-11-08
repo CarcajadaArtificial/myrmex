@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.59
+
+- Added the AppPlugin and the HomePlugin functions.
+
 ### v0.0.58
 
 - Added a tilemap setup rendering for optimization.

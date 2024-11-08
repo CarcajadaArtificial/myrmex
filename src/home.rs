@@ -10,7 +10,15 @@ pub struct HomeState {
     pub input_universe_dimensions: (u32, u32),
 }
 
-// Constants for universe dimensions and UI spacing
+pub struct HomePlugin;
+
+impl Plugin for HomePlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<HomeState>()
+            .add_systems(Update, home.run_if(not(is_universe_loaded)));
+    }
+}
+
 const MIN_DIMENSION: i32 = 32;
 const MAX_DIMENSION: i32 = 256;
 const SECTION_SPACING: f32 = 20.0;
