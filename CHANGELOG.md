@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.61
+
+- Added the SaveFileData resource and updated it when loading a save file.
+
 ### v0.0.60
 
 - Refacrtored the save file loading ui to the app module.

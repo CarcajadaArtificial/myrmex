@@ -1,15 +1,27 @@
+use bevy::prelude::Resource;
 // src/save.rs
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Resource)]
 pub struct SaveFileData {
     pub id: String,
     pub width: u32,
     pub height: u32,
     pub created_at: String,
+}
+
+impl Default for SaveFileData {
+    fn default() -> Self {
+        Self {
+            id: String::new(),
+            width: 32,
+            height: 32,
+            created_at: chrono::Local::now().to_string(),
+        }
+    }
 }
 
 pub fn save_universe(dimensions: (u32, u32)) -> Result<SaveFileData, String> {

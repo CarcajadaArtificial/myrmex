@@ -1,6 +1,7 @@
 use crate::camera;
 use crate::home;
 use crate::menu;
+use crate::save;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 mod load;
@@ -13,6 +14,7 @@ impl Plugin for AppPlugin {
         app.init_resource::<tilemap::TilemapConfig>()
             .add_systems(Startup, tilemap::setup)
             .init_resource::<menu::MenuWindowsState>()
+            .init_resource::<save::SaveFileData>()
             .add_systems(
                 Update,
                 load::save_files.run_if(not(home::is_universe_loaded)),
