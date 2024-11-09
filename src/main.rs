@@ -19,7 +19,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.59"),
+                        title: String::from("Myrmex - v0.0.60"),
                         ..Default::default()
                     }),
                     ..default()

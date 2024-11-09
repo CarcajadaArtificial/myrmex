@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.60
+
+- Refacrtored the save file loading ui to the app module.
+
 ### v0.0.59
 
 - Added the AppPlugin and the HomePlugin functions.
