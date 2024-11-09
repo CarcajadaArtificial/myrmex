@@ -1,3 +1,4 @@
+use crate::save;
 use bevy::prelude::*;
 use bevy_ecs_tilemap::helpers::geometry::get_tilemap_center_transform;
 use bevy_ecs_tilemap::prelude::*;
@@ -5,22 +6,6 @@ use bevy_ecs_tilemap::prelude::*;
 // Component to mark that tilemap is initialized
 #[derive(Component)]
 pub struct TilemapInitialized;
-
-// Resource to store tilemap configuration
-#[derive(Resource)]
-pub struct TilemapConfig {
-    pub size: TilemapSize,
-    pub tile_size: TilemapTileSize,
-}
-
-impl Default for TilemapConfig {
-    fn default() -> Self {
-        Self {
-            size: TilemapSize { x: 32, y: 32 },
-            tile_size: TilemapTileSize { x: 16.0, y: 16.0 },
-        }
-    }
-}
 
 // Initial setup system
 pub fn setup(
@@ -69,32 +54,35 @@ pub fn setup(
 }
 
 // System to update tilemap size when needed
-pub fn update_tilemap_size(
+pub fn load_save_file(
     mut commands: Commands,
-    config: Res<TilemapConfig>,
+    save_file_data: Res<save::SaveFileData>,
     mut query: Query<(Entity, &mut TilemapSize, &mut Transform), With<TilemapInitialized>>,
 ) {
     if let Ok((entity, mut size, mut transform)) = query.get_single_mut() {
-        if size.x != config.size.x || size.y != config.size.y {
-            // Update size
-            *size = config.size;
+        if size.x != save_file_data.width || size.y != save_file_data.height {
+            // Update the tilemap size
+            *size = TilemapSize {
+                x: save_file_data.width,
+                y: save_file_data.height,
+            };
 
             // Recreate tile storage with new size
-            let mut tile_storage = TileStorage::empty(config.size);
+            let mut tile_storage = TileStorage::empty(*size);
 
             // Refill tiles
             fill(
                 TileTextureIndex(0),
-                config.size,
+                *size,
                 TilemapId(entity),
                 &mut commands,
                 &mut tile_storage,
             );
 
-            // Update transform
-            let grid_size: TilemapGridSize = config.tile_size.into();
+            // Update transform based on the new grid size
+            let grid_size: TilemapGridSize = TilemapTileSize { x: 16.0, y: 16.0 }.into();
             *transform = get_tilemap_center_transform(
-                &config.size,
+                &size,
                 &grid_size.into(),
                 &TilemapType::default(),
                 0.0,
@@ -106,25 +94,6 @@ pub fn update_tilemap_size(
     }
 }
 
-// Existing create and fill functions remain the same...
-
-/// This function spawns an empty tilemap entity and sets up the storage for the tiles. It then
-/// populates the tilemap by calling the `fill` function, which places tiles at every position within
-/// the tilemap's dimensions.
-///
-/// ## Parameters
-/// - `commands`:
-///     A mutable reference to the Bevy `Commands` object used to spawn the tilemap entity.
-///
-/// ## Returns
-/// A tuple containing:
-/// - `Entity`: The created tilemap entity.
-/// - `TileStorage`: The storage used to manage tile entities.
-/// - `TilemapSize`: The dimensions of the tilemap.
-/// - `TilemapTileSize`: The size of individual tiles.
-/// - `Vec2`: The grid size representing the dimensions of the grid.
-/// - `TilemapType`: The type of the tilemap.
-///
 fn create(
     commands: &mut Commands,
 ) -> (
@@ -161,16 +130,6 @@ fn create(
     )
 }
 
-/// This function iterates over the dimensions of the tilemap and spawns a tile entity at each
-/// position. The spawned tiles are assigned the provided texture index and are added to the
-/// `TileStorage`.
-///
-/// # Parameters
-/// - `tile_texture_index`: The index representing the texture to be used for each tile.
-/// - `map_size`: The dimensions of the tilemap.
-/// - `tilemap_id`: The ID of the tilemap entity being populated.
-/// - `commands`: A mutable reference to the Bevy `Commands` object used to spawn tile entities.
-/// - `tile_storage`: A mutable reference to the `TileStorage` where tile entities are stored.
 fn fill(
     tile_texture_index: TileTextureIndex,
     map_size: TilemapSize,

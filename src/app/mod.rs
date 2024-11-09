@@ -11,8 +11,7 @@ pub struct AppPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<tilemap::TilemapConfig>()
-            .add_systems(Startup, tilemap::setup)
+        app.add_systems(Startup, tilemap::setup)
             .init_resource::<menu::MenuWindowsState>()
             .init_resource::<save::SaveFileData>()
             .add_systems(
@@ -22,7 +21,7 @@ impl Plugin for AppPlugin {
             .add_systems(
                 Update,
                 (
-                    tilemap::update_tilemap_size,
+                    tilemap::load_save_file,
                     camera::movement,
                     menu::inspector.run_if(input_toggle_active(true, KeyCode::Escape)),
                 )

@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.62
+
+- Added save file loading and implemented a resource for their content.
+
 ### v0.0.61
 
 - Added the SaveFileData resource and updated it when loading a save file.
