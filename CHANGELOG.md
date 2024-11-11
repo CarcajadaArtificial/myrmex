@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.0.63
+
+- Added the third dimension to the universe creation.
+
 ### v0.0.62
 
 - Added save file loading and implemented a resource for their content.

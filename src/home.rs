@@ -5,7 +5,7 @@ use bevy_egui::{egui, EguiContexts};
 #[derive(Resource, Default)]
 pub struct HomeState {
     pub is_universe_loaded: bool,
-    pub input_universe_dimensions: (u32, u32),
+    pub input_universe_dimensions: (u32, u32, u32),
 }
 
 pub struct HomePlugin;
@@ -25,8 +25,6 @@ pub fn is_universe_loaded(game_state: Res<HomeState>) -> bool {
     game_state.is_universe_loaded
 }
 
-/// Main home screen system that renders the entire UI interface.
-/// Manages the layout of three main sections:
 pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<HomeState>) {
     egui::CentralPanel::default().show(egui_contexts.ctx_mut(), |ui| {
         render_header(ui);
@@ -34,26 +32,27 @@ pub fn home(mut egui_contexts: EguiContexts, mut game_state: ResMut<HomeState>) 
     });
 }
 
-/// Renders the application header containing the title "Myrmex"
-/// and adds spacing below it for visual separation.
 fn render_header(ui: &mut egui::Ui) {
     ui.heading("Myrmex");
     ui.add_space(SECTION_SPACING);
 }
 
-/// Renders the universe creation section of the UI.
-/// This section includes:
 fn render_universe_creator(ui: &mut egui::Ui, game_state: &mut HomeState) {
     ui.heading("Create New Universe");
     ui.horizontal(|ui| {
-        ui.label("Width:");
+        ui.label("x (width):");
         ui.add(
             egui::DragValue::new(&mut game_state.input_universe_dimensions.0)
                 .range(MIN_DIMENSION..=MAX_DIMENSION),
         );
-        ui.label("Height:");
+        ui.label("y (length):");
         ui.add(
             egui::DragValue::new(&mut game_state.input_universe_dimensions.1)
+                .range(MIN_DIMENSION..=MAX_DIMENSION),
+        );
+        ui.label("z (height):");
+        ui.add(
+            egui::DragValue::new(&mut game_state.input_universe_dimensions.2)
                 .range(MIN_DIMENSION..=MAX_DIMENSION),
         );
     });

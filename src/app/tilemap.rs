@@ -3,11 +3,9 @@ use bevy::prelude::*;
 use bevy_ecs_tilemap::helpers::geometry::get_tilemap_center_transform;
 use bevy_ecs_tilemap::prelude::*;
 
-// Component to mark that tilemap is initialized
 #[derive(Component)]
 pub struct TilemapInitialized;
 
-// Initial setup system
 pub fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -16,7 +14,6 @@ pub fn setup(
     >,
     query: Query<Entity, With<TilemapInitialized>>,
 ) {
-    // Only setup if tilemap doesn't exist
     if query.is_empty() {
         let texture_handle: Handle<Image> = asset_server.load("tiles.png");
 
@@ -53,24 +50,20 @@ pub fn setup(
     }
 }
 
-// System to update tilemap size when needed
 pub fn load_save_file(
     mut commands: Commands,
     save_file_data: Res<save::SaveFileData>,
     mut query: Query<(Entity, &mut TilemapSize, &mut Transform), With<TilemapInitialized>>,
 ) {
     if let Ok((entity, mut size, mut transform)) = query.get_single_mut() {
-        if size.x != save_file_data.width || size.y != save_file_data.height {
-            // Update the tilemap size
+        if size.x != save_file_data.x || size.y != save_file_data.y {
             *size = TilemapSize {
-                x: save_file_data.width,
-                y: save_file_data.height,
+                x: save_file_data.x,
+                y: save_file_data.y,
             };
 
-            // Recreate tile storage with new size
             let mut tile_storage = TileStorage::empty(*size);
 
-            // Refill tiles
             fill(
                 TileTextureIndex(0),
                 *size,
@@ -79,7 +72,6 @@ pub fn load_save_file(
                 &mut tile_storage,
             );
 
-            // Update transform based on the new grid size
             let grid_size: TilemapGridSize = TilemapTileSize { x: 16.0, y: 16.0 }.into();
             *transform = get_tilemap_center_transform(
                 &size,
@@ -88,7 +80,6 @@ pub fn load_save_file(
                 0.0,
             );
 
-            // Update storage
             commands.entity(entity).insert(tile_storage);
         }
     }

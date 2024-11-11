@@ -3,7 +3,6 @@ use bevy_egui::{egui, EguiContext};
 use bevy_window::PrimaryWindow;
 use std::collections::HashSet;
 
-// New resource to track window states
 #[derive(Resource, Default)]
 pub struct MenuWindowsState {
     open_windows: HashSet<MenuOption>,
@@ -85,7 +84,6 @@ pub const MENU_OPTIONS: &[(&str, MenuOption, fn(&mut egui::Ui))] = &[
     ("Blocks", MenuOption::Blocks, render_blocks),
 ];
 
-// Your existing render functions remain the same
 fn render_controls(ui: &mut egui::Ui) {
     ui.heading("Controls");
     ui.separator();
