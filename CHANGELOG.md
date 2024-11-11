@@ -24,6 +24,10 @@
 
 ## Changes
 
+### v0.0.66
+
+- Added the app/height module.
+
 ### v0.0.65
 
 - Refactored the loading module into a bevy plugin.

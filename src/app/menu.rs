@@ -1,3 +1,4 @@
+use super::height;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContext};
 use bevy_window::PrimaryWindow;
@@ -14,6 +15,7 @@ pub(crate) enum MenuOption {
     Controls,
     Time,
     Blocks,
+    Height,
 }
 
 fn show_panel_options(
@@ -82,6 +84,7 @@ pub const MENU_OPTIONS: &[(&str, MenuOption, fn(&mut egui::Ui))] = &[
     ("Controls", MenuOption::Controls, render_controls),
     ("Time", MenuOption::Time, render_time),
     ("Blocks", MenuOption::Blocks, render_blocks),
+    ("Height", MenuOption::Height, height::render_gui),
 ];
 
 fn render_controls(ui: &mut egui::Ui) {

@@ -3,6 +3,7 @@ use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 
 mod camera;
+mod height;
 mod load;
 mod menu;
 mod tilemap;
