@@ -3,9 +3,7 @@ use bevy_ecs_tilemap::prelude::*;
 use bevy_egui::EguiPlugin;
 
 mod app;
-mod camera;
 mod home;
-mod menu;
 mod save;
 
 fn startup(mut commands: Commands) {
@@ -18,7 +16,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: String::from("Myrmex - v0.0.63"),
+                        title: String::from("Myrmex - v0.0.64"),
                         ..Default::default()
                     }),
                     ..default()

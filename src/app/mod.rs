@@ -1,10 +1,11 @@
-use crate::camera;
 use crate::home;
-use crate::menu;
 use crate::save;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
+
+mod camera;
 mod load;
+mod menu;
 mod tilemap;
 
 pub struct AppPlugin;

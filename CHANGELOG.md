@@ -1,5 +1,33 @@
 # Changelog
 
+## Working on: Observe all layers of the universe individually
+
+- [x] Add tridimensional universe creation.
+- [ ] Add a resource for the current z layer in view, start at half the
+      universe's height.
+- [ ] Add ui control for moving the z layers of the map.
+  - [ ] Add a display for the current z layer in view.
+  - [ ] Add buttons that move the view one layer up and down.
+  - [ ] Add buttons that move the view to the top, bottom and half of the
+        universe.
+
+### Next up: Control the flow of time
+
+- [ ] Add datepicker and time input for the current (starting) datetime of
+      universe during creation.
+- [ ] Add a resource for the current date time information, end-tick delay
+- [ ] Add ui control for advancing time.
+  - [ ] Add a display for the current date and time.
+  - [ ] Add a button that moves to the following second.
+  - [ ] Add a play/pause button with an input that sets the delay after
+        computing a tick (default 800ms).
+
+## Changes
+
+### v0.0.64
+
+- Moved the menu and camera modules inside the app module.
+
 ### v0.0.63
 
 - Added the third dimension to the universe creation.
