@@ -1,5 +1,4 @@
 use crate::home;
-use crate::save;
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 
@@ -14,11 +13,7 @@ impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, tilemap::setup)
             .init_resource::<menu::MenuWindowsState>()
-            .init_resource::<save::SaveFileData>()
-            .add_systems(
-                Update,
-                load::save_files.run_if(not(home::is_universe_loaded)),
-            )
+            .add_plugins(load::LoadPlugin)
             .add_systems(
                 Update,
                 (

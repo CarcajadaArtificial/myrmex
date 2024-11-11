@@ -24,6 +24,10 @@
 
 ## Changes
 
+### v0.0.65
+
+- Refactored the loading module into a bevy plugin.
+
 ### v0.0.64
 
 - Moved the menu and camera modules inside the app module.
