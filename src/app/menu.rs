@@ -1,43 +1,54 @@
 use super::height;
+use crate::home;
+use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContext};
 use bevy_window::PrimaryWindow;
 use std::collections::HashSet;
 
 #[derive(Resource, Default)]
-pub struct MenuWindowsState {
+pub struct MenuData {
     open_windows: HashSet<MenuOption>,
 }
 
-#[derive(PartialEq, Clone, Default, Hash, Eq)]
+#[derive(PartialEq, Clone, Hash, Eq)]
 pub(crate) enum MenuOption {
-    #[default]
     Controls,
     Time,
     Blocks,
     Height,
 }
 
-fn show_panel_options(
-    ui: &mut egui::Ui,
-    window_states: &mut MenuWindowsState,
-    panel_labels: &[(&str, MenuOption, fn(&mut egui::Ui))],
-) {
-    for (label, option, _) in panel_labels {
-        if ui
-            .selectable_label(window_states.open_windows.contains(option), *label)
-            .clicked()
-        {
-            if window_states.open_windows.contains(option) {
-                window_states.open_windows.remove(option);
-            } else {
-                window_states.open_windows.insert(option.clone());
-            }
-        }
+pub struct MenuPlugin;
+
+impl Plugin for MenuPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<MenuData>()
+            // .add_systems(Update, render_hotkeys)
+            .add_systems(
+                Update,
+                (render_left_panel, render_options_windows)
+                    .run_if(input_toggle_active(true, KeyCode::Escape))
+                    .run_if(home::is_universe_loaded),
+            );
     }
 }
 
-fn show_options_windows(egui_context: &mut EguiContext, window_states: &mut MenuWindowsState) {
+const MENU_OPTIONS: &[(&str, MenuOption, fn(&mut egui::Ui))] = &[
+    ("Controls", MenuOption::Controls, render_controls),
+    ("Time", MenuOption::Time, render_time),
+    ("Blocks", MenuOption::Blocks, render_blocks),
+    ("Height", MenuOption::Height, height::render_gui),
+];
+
+fn render_options_windows(world: &mut World) {
+    let mut egui_context = world
+        .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
+        .single(world)
+        .clone();
+
+    let mut window_states = world.resource_mut::<MenuData>();
+
     for option in &window_states.open_windows.clone() {
         if let Some((label, _, render_fn)) = MENU_OPTIONS.iter().find(|(_, opt, _)| opt == option) {
             let mut window_open = true;
@@ -55,37 +66,36 @@ fn show_options_windows(egui_context: &mut EguiContext, window_states: &mut Menu
     }
 }
 
-fn show_left_panel(egui_context: &mut EguiContext, window_states: &mut MenuWindowsState) {
+fn render_left_panel(world: &mut World) {
+    let mut egui_context = world
+        .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
+        .single(world)
+        .clone();
+
+    let mut window_states = world.resource_mut::<MenuData>();
+
     egui::SidePanel::left("menu")
         .default_width(200.0)
         .resizable(false)
         .show(egui_context.get_mut(), |ui| {
             egui::ScrollArea::both().show(ui, |ui| {
                 ui.heading("Myrmex");
-                show_panel_options(ui, window_states, MENU_OPTIONS);
+                for (label, option, _) in MENU_OPTIONS {
+                    if ui
+                        .selectable_label(window_states.open_windows.contains(option), *label)
+                        .clicked()
+                    {
+                        if window_states.open_windows.contains(option) {
+                            window_states.open_windows.remove(option);
+                        } else {
+                            window_states.open_windows.insert(option.clone());
+                        }
+                    }
+                }
                 ui.allocate_space(ui.available_size());
             });
         });
 }
-
-pub fn inspector(world: &mut World) {
-    let mut egui_context = world
-        .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
-        .single(world)
-        .clone();
-
-    let mut window_states = world.resource_mut::<MenuWindowsState>();
-
-    show_left_panel(&mut egui_context, &mut window_states);
-    show_options_windows(&mut egui_context, &mut window_states);
-}
-
-pub const MENU_OPTIONS: &[(&str, MenuOption, fn(&mut egui::Ui))] = &[
-    ("Controls", MenuOption::Controls, render_controls),
-    ("Time", MenuOption::Time, render_time),
-    ("Blocks", MenuOption::Blocks, render_blocks),
-    ("Height", MenuOption::Height, height::render_gui),
-];
 
 fn render_controls(ui: &mut egui::Ui) {
     ui.heading("Controls");

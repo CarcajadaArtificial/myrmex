@@ -24,6 +24,12 @@
 
 ## Changes
 
+### v0.0.67
+
+- Refactored the `show_left_panel()` and `show_options_windows()` functions into
+  `render_options_windows()` and `render_left_panel()`.
+- Added the `MenuPlugin` bevy plugin.
+
 ### v0.0.66
 
 - Added the app/height module.
